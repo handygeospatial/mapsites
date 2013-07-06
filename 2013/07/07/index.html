@@ -52,6 +52,7 @@ body {
 var map;
    
 $(document).ready(function () {
+  osgearth.ProxyHost = null;
   var size = ReadyMap.getWindowSize();
   var headerHeight = jQuery('#header').height();        
   size.h -= headerHeight;
