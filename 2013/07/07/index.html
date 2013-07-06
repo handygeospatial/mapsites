@@ -90,7 +90,7 @@ layer.getTileUrl = function(coord, zoom) {
   coord.z = zoom;
   theCoord = coord;
   var tid = ('0000000' + coord.x).slice(-7) + ('0000000' + coord.y).slice(-7);
-  return layers[coord.z][0] + coord.z + '/' + tid.charAt(0) + tid.charAt(7) + '/' + tid.charAt(1) + tid.charAt(8) + '/' + tid.charAt(2) + tid.charAt(9) + '/' + tid.charAt(3) + tid.charAt(10) + '/' + tid.charAt(4) + tid.charAt(11) + '/' + tid.charAt(5) + tid.charAt(12) + '/' + tid + layers[coord.z][1];
+  return 'http://allow-any-origin.appspot.com/' + layers[coord.z][0] + coord.z + '/' + tid.charAt(0) + tid.charAt(7) + '/' + tid.charAt(1) + tid.charAt(8) + '/' + tid.charAt(2) + tid.charAt(9) + '/' + tid.charAt(3) + tid.charAt(10) + '/' + tid.charAt(4) + tid.charAt(11) + '/' + tid.charAt(5) + tid.charAt(12) + '/' + tid + layers[coord.z][1];
 }
 
   map.setView(new L.LatLng(35.0, 135.0), 12).addLayer(layer);
