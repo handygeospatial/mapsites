@@ -52,6 +52,7 @@ body {
 var map;
    
 $(document).ready(function () {
+  // クロスドメイン周りのモンキーパッチ
   osgearth.getURL = function(url) {return url;}
   osg.Texture.createFromURL = function(imageSource) {
     var a = new osg.Texture();
@@ -63,6 +64,7 @@ $(document).ready(function () {
     }
     return a;
   };
+  // END-OF クロスドメイン周りのモンキーパッチ
 
   var size = ReadyMap.getWindowSize();
   var headerHeight = jQuery('#header').height();        
@@ -103,7 +105,7 @@ layer.getTileUrl = function(coord, zoom) {
   return 'http://allow-any-origin.appspot.com/' + layers[coord.z][0] + coord.z + '/' + tid.charAt(0) + tid.charAt(7) + '/' + tid.charAt(1) + tid.charAt(8) + '/' + tid.charAt(2) + tid.charAt(9) + '/' + tid.charAt(3) + tid.charAt(10) + '/' + tid.charAt(4) + tid.charAt(11) + '/' + tid.charAt(5) + tid.charAt(12) + '/' + tid + layers[coord.z][1];
 }
 
-  map.setView(new L.LatLng(35.0, 135.0), 12).addLayer(layer);
+  map.setView(new L.LatLng(38.3, 141.0), 7).addLayer(layer);
   map.finalizeGlobe();
 });
 </script>
@@ -113,6 +115,6 @@ layer.getTileUrl = function(coord, zoom) {
 <p>ReadyMap WebGL x Leaflet x Digital Japan</p>
 </div>
 <div id="ViewContainer"></div>
-<div id="DemoHelp"><p>ドラッグで回転、シフト+ドラッグで俯角変更、スクロールでズームのようです。情報源は<a href="http://demo.pelicanmapping.com/rmweb/webgl/tests/leaflet.html">ReadyMap WebGL Leaflet Demo</a>。</p></div>
+<div id="DemoHelp"><p>ドラッグで回転、シフト+ドラッグで俯角変更、スクロールでズームのようです。情報源は<a href="http://demo.pelicanmapping.com/rmweb/webgl/tests/leaflet.html">ReadyMap WebGL Leaflet Demo</a>。出所明示：<a href="http://cyberjapan.jp/">電子国土</a></p></div>
 </body>
 </html>
