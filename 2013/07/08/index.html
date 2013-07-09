@@ -51,7 +51,7 @@ layer.getTileUrl = function(coord) {
   return layers[coord.z][0] + coord.z + '/' + tid.charAt(0) + tid.charAt(7) + '/' + tid.charAt(1) + tid.charAt(8) + '/' + tid.charAt(2) + tid.charAt(9) + '/' + tid.charAt(3) + tid.charAt(10) + '/' + tid.charAt(4) + tid.charAt(11) + '/' + tid.charAt(5) + tid.charAt(12) + '/' + tid + layers[coord.z][1];
 }
 
-map.setView(new L.LatLng(35, 135), 7).addLayer(layer);
+map.setView(new L.LatLng(35, 135), 4).addLayer(layer);
 
 var markers = L.markerClusterGroup({attribution: "国土数値情報（漁港データ）　国土交通省"});
 		
