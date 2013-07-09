@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<title>Marker Cluster</title>
+<title>OSM Restaurants x Digital Japan</title>
 <meta charset='UTF-8'>
 <link rel="stylesheet" 
   href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.css" />
@@ -51,7 +51,7 @@ layer.getTileUrl = function(coord) {
   return layers[coord.z][0] + coord.z + '/' + tid.charAt(0) + tid.charAt(7) + '/' + tid.charAt(1) + tid.charAt(8) + '/' + tid.charAt(2) + tid.charAt(9) + '/' + tid.charAt(3) + tid.charAt(10) + '/' + tid.charAt(4) + tid.charAt(11) + '/' + tid.charAt(5) + tid.charAt(12) + '/' + tid + layers[coord.z][1];
 }
 
-map.setView(new L.LatLng(35, 135), 4).addLayer(layer);
+map.setView(new L.LatLng(35.60818, 138.72436), 7).addLayer(layer);
 
 var markers = L.markerClusterGroup();
 		
@@ -62,7 +62,7 @@ for (var i = 0; i < data.length; i++) {
  marker.bindPopup(title);
  markers.addLayer(marker);
 }
-map.attributionControl.addAttribution('国土数値情報（漁港データ）　国土交通省');
+map.attributionControl.addAttribution('some map data (c) OpenStreetMap Contributors');
 map.addLayer(markers);
 }
 </script>
