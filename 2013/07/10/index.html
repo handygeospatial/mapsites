@@ -12,7 +12,7 @@
 <style type="text/css">
 body {padding:0; margin:0; font-family:Helvetica,Verdana,Arial,sans-serif;}
 html, body, #map {height: 100%; width: 100%;}
-text {fill: green; text-decoration: underline; font-size: 10pt}
+text {fill: black; text-decoration: underline; font-size: 10pt}
 text:hover {fill: red; font-size: 14pt}
 </style>
 <script src="http://d3js.org/d3.v2.min.js?2.9.3"></script>
@@ -58,6 +58,7 @@ map.attributionControl.addAttribution(
   'some map data (c) OpenStreetMap Contributors');
 var hash = new L.Hash(map);
 
+// information source: http://bost.ocks.org/mike/leaflet/
 var svg = d3.select(map.getPanes().overlayPane).append('svg')
 var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
