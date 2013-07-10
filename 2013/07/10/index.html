@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+<title>D3 x Leaflet x OSM restaurants x Digital Japan</title>
+<meta charset='UTF-8'>
+<link rel="stylesheet" 
+  href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.css" />
+<!--[if lte IE 8]>
+<link rel="stylesheet"
+  href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.ie.css" />
+<![endif]-->
+<style type="text/css">
+body {padding:0; margin:0; font-family:Helvetica,Verdana,Arial,sans-serif;}
+html, body, #map {height: 100%; width: 100%;}
+text {fill: green; text-decoration: underline; font-size: 10pt}
+text:hover {fill: red; font-size: 14pt}
+</style>
+<script src="http://d3js.org/d3.v2.min.js?2.9.3"></script>
+<script src="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet-src.js"></script>
+<script src="https://raw.github.com/mlevans/leaflet-hash/master/leaflet-hash.js"></script>
+<script>
+var map;
+
+function run() {
+map = new L.Map('map');
+map.setView(new L.LatLng(35.65974, 139.71727), 18);
+
+layers = [
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 0
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 1
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 2
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 3
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 4
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 5
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 6
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 7
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 8
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 9
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 10
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 11
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 12
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 13
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 14
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 15
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 16
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 17
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/FGD/latest/', '.png'] // 18
+];
+
+var layer = new L.TileLayer('nil', {minZoom: 0, maxZoom: 18, attribution: '電子国土'});
+layer.getTileUrl = function(coord) {
+  var tid = ('0000000' + coord.x).slice(-7) + ('0000000' + coord.y).slice(-7);
+  return layers[coord.z][0] + coord.z + '/' + tid.charAt(0) + tid.charAt(7) + '/' + tid.charAt(1) + tid.charAt(8) + '/' + tid.charAt(2) + tid.charAt(9) + '/' + tid.charAt(3) + tid.charAt(10) + '/' + tid.charAt(4) + tid.charAt(11) + '/' + tid.charAt(5) + tid.charAt(12) + '/' + tid + layers[coord.z][1];
+}
+
+map.addLayer(layer);
+map.attributionControl.addAttribution(
+  'some map data (c) OpenStreetMap Contributors');
+var hash = new L.Hash(map);
+
+var svg = d3.select(map.getPanes().overlayPane).append('svg')
+var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
+
+function project(x) {
+  var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
+  return [point.x, point.y];
+}
+
+d3.json("data2.geojson", function(collection) {
+  var bounds = d3.geo.bounds(collection);
+
+  var text = g.selectAll("text")
+      .data(collection.features)
+    .enter().append("text");
+
+  map.on("viewreset", reset);
+  reset();
+
+  // Reposition the SVG to cover the features.
+  function reset() {
+    var bottomLeft = project(bounds[0]),
+        topRight = project(bounds[1]);
+
+    svg.attr("width", topRight[0] - bottomLeft[0])
+       .attr("height", bottomLeft[1] - topRight[1])
+       .style("margin-left", bottomLeft[0] + "px")
+       .style("margin-top", topRight[1] + "px");
+    g.attr("transform", "translate(" + -bottomLeft[0] + 
+           "," + -topRight[1] + ")");
+
+    text.attr('x', function(d) {
+          return project(d['geometry']['coordinates'])[0];})
+        .attr('y', function(d) {
+          return project(d['geometry']['coordinates'])[1];})
+        .text(function(d) {
+          return '←' + d['properties']['name'];});
+  }
+});
+}
+</script>
+</head>
+<body onload='run();'>
+<div id="map"></div>
+</body>
+</html>
