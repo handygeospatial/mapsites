@@ -16,9 +16,6 @@
 body {padding:0; margin:0; font-family:Helvetica,Verdana,Arial,sans-serif;}
 html, body, #map {height: 100%; width: 100%;}
 .leaflet-top {top: 20px;}
-//.leaflet-control-layers-toggle:after {
-//  content: '国土交通省国土地理院';
-//}
 </style>
 <script src="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet-src.js"></script>
 <script>
@@ -26,8 +23,16 @@ var map;
 function run() {
 map = new L.Map('map');
 map.zoomControl.setPosition('bottomright');
+function gsi(layers) {
+  var layer = new L.TileLayer('nil', {minZoom: 0, maxZoom: layers.length - 1, attribution: '電子国土'});
+  layer.getTileUrl = function(coord) {
+    var tid = ('0000000' + coord.x).slice(-7) + ('0000000' + coord.y).slice(-7);
+    return layers[coord.z][0] + coord.z + '/' + tid.charAt(0) + tid.charAt(7) + '/' + tid.charAt(1) + tid.charAt(8) + '/' + tid.charAt(2) + tid.charAt(9) + '/' + tid.charAt(3) + tid.charAt(10) + '/' + tid.charAt(4) + tid.charAt(11) + '/' + tid.charAt(5) + tid.charAt(12) + '/' + tid + layers[coord.z][1];
+  }
+  return layer;
+}
 
-layers = [
+var std = gsi([
   ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 0
   ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 1
   ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 2
@@ -47,22 +52,50 @@ layers = [
   ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 16
   ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 17
   ['http://cyberjapandata.gsi.go.jp/sqras/all/FGD/latest/', '.png'] // 18
-];
+]);
+map.setView(new L.LatLng(35, 135), 4).addLayer(std);
 
-var layer = new L.TileLayer('nil', {minZoom: 0, maxZoom: 18, attribution: '電子国土'});
-layer.getTileUrl = function(coord) {
-  var tid = ('0000000' + coord.x).slice(-7) + ('0000000' + coord.y).slice(-7);
-  return layers[coord.z][0] + coord.z + '/' + tid.charAt(0) + tid.charAt(7) + '/' + tid.charAt(1) + tid.charAt(8) + '/' + tid.charAt(2) + tid.charAt(9) + '/' + tid.charAt(3) + tid.charAt(10) + '/' + tid.charAt(4) + tid.charAt(11) + '/' + tid.charAt(5) + tid.charAt(12) + '/' + tid + layers[coord.z][1];
-}
-
-map.setView(new L.LatLng(35, 135), 4).addLayer(layer);
-
-lc = L.control.layers({'base': layer}, {'overlay': layer});
-lc.addTo(map);
-L.control.layers({'base': layer}, {'overlay': layer}).addTo(map);
-L.control.layers({'base': layer}, {'overlay': layer}).addTo(map);
-L.control.layers({'base': layer}, {'overlay': layer}).addTo(map);
-
+L.control.layers({
+  '標準地図': std,
+  '空中写真': gsi([
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 0
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 1
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 2
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 3
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 4
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 5
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 6
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 7
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 8
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 9
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 10
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 11
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 12
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 13
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 14
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMO/latest/', '.jpg'], // 15
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMO/latest/', '.jpg'], // 16
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMO/latest/', '.jpg'], // 17
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/FGD/latest/', '.png'] // 18
+  ]),
+  '白地図': gsi([
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 0
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 1
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 2
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 3
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 4
+  ['http://cyberjapandata2.gsi.go.jp/sqras/all/BLANK/latest/', '.png'], // 5
+  ['http://cyberjapandata2.gsi.go.jp/sqras/all/BLANK/latest/', '.png'], // 6
+  ['http://cyberjapandata2.gsi.go.jp/sqras/all/BLANK/latest/', '.png'], // 7
+  ['http://cyberjapandata2.gsi.go.jp/sqras/all/BLANK/latest/', '.png'], // 8
+  ['http://cyberjapandata2.gsi.go.jp/sqras/all/BLANK/latest/', '.png'], // 9
+  ['http://cyberjapandata2.gsi.go.jp/sqras/all/BLANK/latest/', '.png'], // 10
+  ['http://cyberjapandata2.gsi.go.jp/sqras/all/BLANK/latest/', '.png'], // 11
+  ['http://cyberjapandata2.gsi.go.jp/sqras/all/BLANK/latest/', '.png'], // 12
+  ['http://cyberjapandata2.gsi.go.jp/sqras/all/BLANK/latest/', '.png'], // 13
+  ['http://cyberjapandata2.gsi.go.jp/sqras/all/BLANK/latest/', '.png'], // 14
+  ])
+}).addTo(map);
 }
 </script>
 </head>
