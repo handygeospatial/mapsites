@@ -15,6 +15,10 @@
 <style type="text/css">
 body {padding:0; margin:0; font-family:Helvetica,Verdana,Arial,sans-serif;}
 html, body, #map {height: 100%; width: 100%;}
+.leaflet-top {top: 20px;}
+//.leaflet-control-layers-toggle:after {
+//  content: '国土交通省国土地理院';
+//}
 </style>
 <script src="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet-src.js"></script>
 <script>
@@ -22,10 +26,6 @@ var map;
 function run() {
 map = new L.Map('map');
 map.zoomControl.setPosition('bottomright');
-L.control.layers([], []).addTo(map);
-L.control.layers([], []).addTo(map);
-L.control.layers([], []).addTo(map);
-L.control.layers([], []).addTo(map);
 
 layers = [
   ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 0
@@ -56,7 +56,13 @@ layer.getTileUrl = function(coord) {
 }
 
 map.setView(new L.LatLng(35, 135), 4).addLayer(layer);
-map.addLayer(markers);
+
+lc = L.control.layers({'base': layer}, {'overlay': layer});
+lc.addTo(map);
+L.control.layers({'base': layer}, {'overlay': layer}).addTo(map);
+L.control.layers({'base': layer}, {'overlay': layer}).addTo(map);
+L.control.layers({'base': layer}, {'overlay': layer}).addTo(map);
+
 }
 </script>
 </head>
