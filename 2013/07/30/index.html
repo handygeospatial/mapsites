@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>OpenLayers 3 x Digital Japan</title>
+<link rel="stylesheet" href="http://ol3js.org/en/master/build/ol.css">
+<style>
+body {padding:0; margin:0;}
+html, body, #map {height: 100%; width: 100%;}
+</style>
+<script src="http://ol3js.org/en/master/build/ol.js"></script>
+<script>
+function run() {
+  var layer = new ol.layer.TileLayer({source: new ol.source.OSM()});
+  var map = new ol.Map({layers: [layer],
+    renderers: ol.RendererHints.createFromQueryData(),
+    target: 'map', view: new ol.View2D({center: [135, 35], zoom: 5})});
+}
+</script>
+</head>
+<body onload='run()'>
+<div id='map'>
+</body>
+</html>

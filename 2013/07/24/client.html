@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+<!-- client.html CC0 -->
+<meta charset='UTF-8'>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="stylesheet" 
+  href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.css" />
+<!--[if lte IE 8]>
+<link rel="stylesheet"
+  href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.ie.css" />
+<![endif]-->
+<style type="text/css">
+body {padding:0; margin:0;}
+html, body, #map {height: 100%; width: 100%;}
+#output {width: 300px; height: 200px; border: 1px solid #F00; position: 5px 10px; float: left; overflow: auto;}
+.leaflet-top {top: 20px;}
+</style>
+<script src="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet-src.js"></script>
+</head>
+<body onload='run();'>
+<div id="map"></div>
+<script>
+function run() {
+map = new L.Map('map');
+ws = new WebSocket('ws://localhost:8888');
+sent = false;
+
+function log(evt, msg) {
+  return '<div>' + evt + ': ' + msg + '</div>';
+}
+
+ws.onmessage = function(evt) {
+  if(sent) {sent = false; return}
+  document.getElementById('output').innerHTML += log('received', evt.data);
+  theEvt = evt;
+  console.log(evt.data);
+  var o = JSON.parse(evt.data);
+  theO = o;
+  map.setView([o.lat, o.lng], o.zoom);
+};
+
+ws.onclose = function(evt) {
+  document.getElementById('output').innerHTML += log('disconnect', evt.code + '-' + evt.type);
+};
+
+map.zoomControl.setPosition('bottomright');
+function gsi(layers) {
+  var layer = new L.TileLayer('nil', {minZoom: 0, maxZoom: layers.length - 1, attribution: '電子国土'});
+  layer.getTileUrl = function(coord) {
+    var tid = ('0000000' + coord.x).slice(-7) + ('0000000' + coord.y).slice(-7);
+    return layers[coord.z][0] + coord.z + '/' + tid.charAt(0) + tid.charAt(7) + '/' + tid.charAt(1) + tid.charAt(8) + '/' + tid.charAt(2) + tid.charAt(9) + '/' + tid.charAt(3) + tid.charAt(10) + '/' + tid.charAt(4) + tid.charAt(11) + '/' + tid.charAt(5) + tid.charAt(12) + '/' + tid + layers[coord.z][1];
+  }
+  return layer;
+}
+
+var std = gsi([
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 0
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 1
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 2
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 3
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 4
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 5
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 6
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 7
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 8
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 9
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 10
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 11
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 12
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 13
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 14
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 15
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 16
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 17
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/FGD/latest/', '.png'] // 18
+]);
+map.setView(new L.LatLng(35, 135), 4).addLayer(std);
+
+L.control.layers({'標準地図': std}, {}).addTo(map);
+
+document.getElementsByClassName('leaflet-top leaflet-left')[0].innerHTML += "<div id='output'>debug</div>";
+
+map.on('moveend', function(evt) {
+  var c = map.getCenter();
+  ws.send(JSON.stringify({lng: c.lng, lat: c.lat, zoom: map.getZoom()}));
+  sent = true;
+});
+
+}
+</script>
+</body>
+</html>

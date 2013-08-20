@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+<![endif]-->
+
+<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+<style>
+html, body, #map {height: 100%; width: 100%;}
+</style>
+<script>
+function run() {
+  var url = 'http://saigai.gsi.go.jp/1/20130717/l/0019-qv.jpg';
+  var url = 'http://saigai.gsi.go.jp/1/20130731flYamaguchi/ortho/qv/0731susa/8-3.jpg';
+  document.title = url;
+  var img = new Image();
+  img.src = url;
+  var point = new L.Point(img.width, img.height);
+
+  var map = L.map('map', {maxZoom: 17, minZoom: 11}).setView([0, 0], 14);
+  var bounds = L.latLngBounds(new L.LatLng(0, 0), 
+    map.layerPointToLatLng(point));
+  map.fitBounds(bounds);
+  ol = L.imageOverlay(url, bounds);
+  ol.addTo(map);
+}
+</script>
+</head>
+<body onload='run()'>
+<div id='map'>
+</body>
+</html>
