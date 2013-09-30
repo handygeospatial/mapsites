@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+<title>ReadyMap WebGL x Leaflet x Digital Japan Demo</title>
+<meta charset='UTF-8'>	
+<script src="http://demo.pelicanmapping.com/rmweb/webgl/tests/leaflet/dist/leaflet.js"></script>
+<script type="text/javascript" src="http://demo.pelicanmapping.com/rmweb/webgl/js/jquery/jquery-1.4.2.js"></script>
+<script type="text/javascript" src="http://demo.pelicanmapping.com/rmweb/webgl/build/readymap-debug-0.0.1.js"></script>
+<link rel="stylesheet" 
+  href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.css" />
+<!--[if lte IE 8]>
+<link rel="stylesheet"
+  href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.ie.css" />
+<![endif]-->
+<style type="text/css">
+body {
+  background: black;
+  overflow:hidden;
+  padding:0;
+  margin:0;
+  color: white;
+  font-family:Helvetica,Verdana,Arial,sans-serif;
+}
+
+#header {
+  color: #fff;
+}    
+
+#ViewContainer 
+{
+  clear: both;
+  position: absolute;
+}
+
+#DemoHelp {
+  float:right;
+  position:absolute;
+  right: 4px;
+  z-index:100;
+  margin-top: 4px;
+  padding: 4px;
+  width: 300px;
+  background-color: #666;
+	border: 1px solid #999;
+}
+    
+#DemoHelp a:link {color:#be6;}
+#DemoHelp a:visited {color:#be6;}
+#DemoHelp a:hover {color:#be6;}
+</style>
+<script type="text/javascript">
+var map;
+   
+$(document).ready(function () {
+  // クロスドメイン周りのモンキーパッチ
+  osgearth.getURL = function(url) {return url;}
+  osg.Texture.createFromURL = function(imageSource) {
+    var a = new osg.Texture();
+    if (imageSource !== undefined) {
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = imageSource;
+        a.setImage(img);
+    }
+    return a;
+  };
+  // END-OF クロスドメイン周りのモンキーパッチ
+
+  var size = ReadyMap.getWindowSize();
+  var headerHeight = jQuery('#header').height();        
+  size.h -= headerHeight;
+  $("#ViewContainer").width(size.w);
+  $("#ViewContainer").height(size.h);
+        
+  // create Leaflet map
+  map = new L.Map('ViewContainer', { globe: true });
+
+layers = [
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 0
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 1
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 2
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 3
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/GLMD/latest/', '.png'], // 4
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 5
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 6
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 7
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/JAIS/latest/', '.png'], // 8
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 9
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 10
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD1000K/latest/', '.png'], // 11
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 12
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 13
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/BAFD200K/latest/', '.png'], // 14
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 15
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 16
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/DJBMM/latest/', '.png'], // 17
+  ['http://cyberjapandata.gsi.go.jp/sqras/all/FGD/latest/', '.png'] // 18
+];
+
+var layer = new L.TileLayer('nil', {minZoom: 0, maxZoom: 18, attribution: '電子国土'});
+layer.getTileUrl = function(coord, zoom) {
+  coord.z = zoom;
+  theCoord = coord;
+  var tid = ('0000000' + coord.x).slice(-7) + ('0000000' + coord.y).slice(-7);
+  return layers[coord.z][0] + coord.z + '/' + tid.charAt(0) + tid.charAt(7) + '/' + tid.charAt(1) + tid.charAt(8) + '/' + tid.charAt(2) + tid.charAt(9) + '/' + tid.charAt(3) + tid.charAt(10) + '/' + tid.charAt(4) + tid.charAt(11) + '/' + tid.charAt(5) + tid.charAt(12) + '/' + tid + layers[coord.z][1];
+}
+
+  map.setView(new L.LatLng(38.3, 141.0), 7).addLayer(layer);
+  map.finalizeGlobe();
+});
+</script>
+</head>
+<body>
+<div id="header">
+<p>ReadyMap WebGL x Leaflet x Digital Japan</p>
+</div>
+<div id="ViewContainer"></div>
+<div id="DemoHelp"><p>ドラッグで移動、シフト+ドラッグで俯角変更、スクロールでズームのようです。情報源は<a href="http://demo.pelicanmapping.com/rmweb/webgl/tests/leaflet.html">ReadyMap WebGL Leaflet Demo</a>。出所明示：<a href="http://cyberjapan.jp/">電子国土</a></p></div>
+</body>
+</html>
