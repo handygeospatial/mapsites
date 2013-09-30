@@ -189,8 +189,8 @@ window.offlineMaps.eventManager = {
   });
 
   emr.on('mapLoad', function (storage) {
-    map = L.map('map').setView([36, 140], 8);
-    new StorageTileLayer('http://cyberjapandata.gsi.go.jp/xyz/std2012/{z}/{x}/{y}.png', {attribution: '電子国土', storage: storage}).addTo(map);
+    map = L.map('map').setView([36, 140], 7);
+    new StorageTileLayer('http://cyberjapandata.gsi.go.jp/xyz/std2012/{z}/{x}/{y}.png', {attribution: '電子国土', storage: storage, tileSize: 128, zoomOffset: 1}).addTo(map);
     emr.fire('mapLoaded');
   });
 })(window, window.offlineMaps.eventManager, L);
