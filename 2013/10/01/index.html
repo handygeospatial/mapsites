@@ -91,6 +91,8 @@ window.offlineMaps.eventManager = {
         };
         result.onerror = errorCallback;
       };
+      this.size = function() {
+      };
     };
     return indexedDB ? new IndexedDBImpl() : null;
   };
@@ -119,12 +121,14 @@ window.offlineMaps.eventManager = {
           tx.executeSql('SELECT value FROM tile WHERE key = ?', [key], function (tx, result) {successCallback(result.rows.length ? result.rows.item(0).value : undefined);}, errorCallback);
         });
       };
+      this.size = function () {
+      }:
     };
     return openDatabase ? new WebSqlImpl() : null;
   };
 
   emr.on('storageLoad', function () {
-    var storage =  getIndexedDBStorage() || getWebSqlStorage() || null;
+    storage =  getIndexedDBStorage() || getWebSqlStorage() || null;
     if (!storage) {emr.fire('storageLoaded', null);}
   });
 })(window, window.offlineMaps.eventManager);
