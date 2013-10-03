@@ -91,7 +91,14 @@ window.offlineMaps.eventManager = {
         };
         result.onerror = errorCallback;
       };
-      this.size = function() {
+      this.size = function(successCallback, errorCallback) {
+        var transaction = db.transaction(['tile'], 'readonly');
+        var objectStore = transaction.objectStore('tile');
+        var result = objectStore.count();
+        result.onsuccess = function() {
+          successCallback(this.result);
+        };
+        result.onerror = errorCallback;
       };
     };
     return indexedDB ? new IndexedDBImpl() : null;
@@ -118,10 +125,20 @@ window.offlineMaps.eventManager = {
       };
       this.get = function (key, successCallback, errorCallback) {
         db.transaction(function (tx) {
-          tx.executeSql('SELECT value FROM tile WHERE key = ?', [key], function (tx, result) {successCallback(result.rows.length ? result.rows.item(0).value : undefined);}, errorCallback);
+          tx.executeSql('SELECT value FROM tile WHERE key = ?', [key], 
+            function (tx, result) {
+              successCallback(result.rows.length ? 
+                result.rows.item(0).value : undefined);}, 
+            errorCallback);
         });
       };
-      this.size = function () {
+      this.size = function (successCallback, errorCallback) {
+        db.transaction(function (tx) {
+          tx.executeSql('SELECT count(*) FROM tile;', [],
+            function(tx, result) {
+              successCallback(result.rows.item(0)['count(*)'])}, 
+            errorCallback);
+        });
       };
     };
     return openDatabase ? new WebSqlImpl() : null;
@@ -190,6 +207,7 @@ window.offlineMaps.eventManager = {
   emr.on('mapLoad', function (storage) {
     map = L.map('map').setView([36, 140], 7);
     new StorageTileLayer('http://cyberjapandata.gsi.go.jp/xyz/std2012/{z}/{x}/{y}.png', {attribution: '電子国土', storage: storage}).addTo(map);
+    storage.size(map.attributionControl.addAttribution, alert) //map.attributionControl.setPrefix);    
     emr.fire('mapLoaded');
   });
 })(window, window.offlineMaps.eventManager, L);
