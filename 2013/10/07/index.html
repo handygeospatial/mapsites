@@ -214,7 +214,8 @@ window.offlineMaps.eventManager = {
   emr.on('mapLoad', function(storage) {
     map = L.map('map').setView([36, 140], 7);
     new StorageTileLayer('http://cyberjapandata.gsi.go.jp/xyz/std2013/{z}/{x}/{y}.png', {attribution: '電子国土', storage: storage}).addTo(map);
-    L.control.locate({follow: true, stopFollowingOnDrag: true}).addTo(map);
+    L.control.locate({follow: true, stopFollowingOnDrag: true, position: 'bottomright'}).addTo(map);
+    map.zoomControl.setPosition('bottomright');
     storage.size(map.attributionControl.addAttribution, alert) //map.attributionControl.setPrefix);
     
     var CacheSizeControl = L.Control.extend({
