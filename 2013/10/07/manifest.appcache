@@ -8,3 +8,9 @@ index.html
 leaflet.css
 leaflet.ie.css
 leaflet.js
+L.Control.Locate.css
+L.Control.Locate.ie.css
+L.Control.Locate.js
+images/locate.png
+images/locate_touch.png
+images/spinner.gif
