@@ -12,7 +12,8 @@
 html, body, #map {
   width: 100%; height: 100%; margin: 0; padding: 0; border: 0;
 }
-.cache-size-control {background-color: yellow;}
+div.leaflet-control-layers, div.leaflet-control-zoom, div.leaflet-control-locate {background: rgba(255, 255, 255, 0.75); -webkit-filter: opacity(0.61)}
+.cache-size-control {background: rgba(255, 255, 0, 0.61);}
 //.leaflet-container{background-color: #fff; -webkit-filter: grayscale(100%) blur(0.2px) invert(100%);}</style>
 <link rel="stylesheet" href="leaflet.css" />
 <link rel="stylesheet" href="L.Control.Locate.css" />
@@ -253,7 +254,7 @@ __image__ = image;
     }
     map = L.map('map', {center: [36, 140], zoom: 7, layers: layers['std']});
     map.addControl(csc);
-    new L.Control.GeoSearch({provider: new L.GeoSearch.Provider.Esri(), position: 'bottomleft'}).addTo(map);
+    new L.Control.GeoSearch({provider: new L.GeoSearch.Provider.Esri(), position: 'bottomleft', showMarker: false}).addTo(map);
     L.control.layers(layers, null, {position: 'bottomleft'}).addTo(map);
     L.control.locate({follow: true, stopFollowingOnDrag: true, position: 'bottomright'}).addTo(map);
     map.zoomControl.setPosition('bottomright');
