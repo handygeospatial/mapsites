@@ -76,13 +76,13 @@ window.offlineMaps.eventManager = {
         console.log(error);
       };
       request.onupgradeneeded = function() {
-        var store = this.result.createObjectStore('tile', { keyPath: 'key'});
+        var store = this.result.createObjectStore('tile', {keyPath: 'key'});
         store.createIndex('key', 'key', { unique: true });
       };
       this.add = function(key, value) {
         var transaction = db.transaction(['tile'], 'readwrite');
         var objectStore = transaction.objectStore('tile');
-        objectStore.put({key: key, value: value});
+        objectStore.put({key: key, value: value, date: Date.now()});
       };
       this.delete = function(key) {
         var transaction = db.transaction(['tile'], 'readwrite');
@@ -117,11 +117,11 @@ window.offlineMaps.eventManager = {
       var self = this;
       var db = openDatabase('TileStorage', '1.0', 'Tile Storage', 5 * 1024 * 1024);
       db.transaction(function(tx) {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS tile (key TEXT PRIMARY KEY, value TEXT)', [], function() {impl = 'WebSQL'; emr.fire('storageLoaded', self);});
+        tx.executeSql('CREATE TABLE IF NOT EXISTS tile (key TEXT PRIMARY KEY, value TEXT, date INTEGER)', [], function() {impl = 'WebSQL'; emr.fire('storageLoaded', self);});
       });
       this.add = function(key, value) {
         db.transaction(function(tx) {
-          tx.executeSql('INSERT INTO tile (key, value) VALUES (?, ?)', [key, value]);
+          tx.executeSql('INSERT INTO tile (key, value, date) VALUES (?, ?, ?)', [key, value, Date.now()]);
         });
       };
       this.delete = function(key) {
