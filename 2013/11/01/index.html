@@ -13,7 +13,7 @@ html, body, #map {
   width: 100%; height: 100%; margin: 0; padding: 0; border: 0;
 }
 .cache-size-control {background-color: yellow;}
-.leaflet-container{background-color: #fff; -webkit-filter: grayscale(100%) blur(0.2px) invert(100%);}</style>
+//.leaflet-container{background-color: #fff; -webkit-filter: grayscale(100%) blur(0.2px) invert(100%);}</style>
 <link rel="stylesheet" href="leaflet.css" />
 <link rel="stylesheet" href="L.Control.Locate.css" />
 <!--[if lte IE 8]>
@@ -160,11 +160,13 @@ window.offlineMaps.eventManager = {
   var StorageTileLayer = L.TileLayer.extend({
     _imageToDataUri: function(image) {
       var canvas = window.document.createElement('canvas');
+__image__ = image;
       canvas.width = image.width;
       canvas.height = image.height;
       var context = canvas.getContext('2d');
       context.drawImage(image, 0, 0);
-      return canvas.toDataURL('image/png');
+      return canvas.toDataURL('image/png'); // anyway
+//      return canvas.toDataURL('image/' + image.src.slice(-3));
     },
 
     _tileOnLoadWithCache: function() {
@@ -209,8 +211,27 @@ window.offlineMaps.eventManager = {
   });
 
   emr.on('mapLoad', function(storage) {
-    map = L.map('map').setView([36, 140], 7);
-    new StorageTileLayer('http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {attribution: '国土地理院', storage: storage, tn: 'std'}).addTo(map);
+    var os = [
+      {name: 'std', ext: 'png'},
+      {name: 'std2012', ext: 'png'},
+      {name: 'blank', ext: 'png'},
+      {name: 'ort', ext: 'jpg'},
+      {name: 'gazo1', ext: 'jpg'},
+      {name: 'gazo2', ext: 'jpg'},
+      {name: 'gazo3', ext: 'jpg'},
+      {name: 'gazo4', ext: 'jpg'},
+      {name: 'toho1', ext: 'jpg'},
+      {name: 'toho2', ext: 'jpg'}
+    ];
+    var layers = {};
+    for(i in os) {
+      var o = os[i];
+      var layer = new StorageTileLayer('http://cyberjapandata.gsi.go.jp/xyz/' + o.name + '/{z}/{x}/{y}.' + o.ext, {attribution: '国土地理院', storage: storage, tn: o.name});
+      layers[o.name] = layer;
+      os[i] = layer;
+    }
+    map = L.map('map', {center: [36, 140], zoom: 7, layers: layers['std']});
+    L.control.layers(layers).addTo(map);
     L.control.locate({follow: true, stopFollowingOnDrag: true, position: 'bottomright'}).addTo(map);
     map.zoomControl.setPosition('bottomright');
     storage.size(map.attributionControl.addAttribution, alert);
