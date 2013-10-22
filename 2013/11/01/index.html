@@ -13,9 +13,10 @@ html, body, #map {
   width: 100%; height: 100%; margin: 0; padding: 0; border: 0;
 }
 .cache-size-control {background-color: yellow;}
-.leaflet-container{background-color: #fff; -webkit-filter: grayscale(100%) blur(0.2px) invert(100%);}</style>
+//.leaflet-container{background-color: #fff; -webkit-filter: grayscale(100%) blur(0.2px) invert(100%);}</style>
 <link rel="stylesheet" href="leaflet.css" />
 <link rel="stylesheet" href="L.Control.Locate.css" />
+<link rel="stylesheet" href="l.geosearch.css" />
 <!--[if lte IE 8]>
 <link rel="stylesheet" href="leaflet.ie.css"/>
 <link rel="stylesheet" href="L.Control.Locate.ie.css"/>
@@ -25,6 +26,8 @@ html, body, #map {
 <div id="map"></div>
 <script src="leaflet.js"></script>
 <script src="L.Control.Locate.js"></script>
+<script src="l.control.geosearch.js"></script>
+<script src="l.geosearch.provider.esri.js"></script>
 <script>
 window.offlineMaps = {};
 
@@ -220,7 +223,7 @@ __image__ = image;
           storage.size(function(size) {
             c.removeChild(c.firstChild);
             c.appendChild(document.createTextNode(
-              size + ' tiles in offline cache'));
+              size + ' tiles in offline cache / z = ' + map.getZoom()));
           }, function() {})
         });
         map.fire('moveend');
@@ -250,6 +253,7 @@ __image__ = image;
     }
     map = L.map('map', {center: [36, 140], zoom: 7, layers: layers['std']});
     map.addControl(csc);
+    new L.Control.GeoSearch({provider: new L.GeoSearch.Provider.Esri(), position: 'bottomleft'}).addTo(map);
     L.control.layers(layers, null, {position: 'bottomleft'}).addTo(map);
     L.control.locate({follow: true, stopFollowingOnDrag: true, position: 'bottomright'}).addTo(map);
     map.zoomControl.setPosition('bottomright');

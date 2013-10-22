@@ -11,6 +11,13 @@ leaflet.js
 L.Control.Locate.css
 L.Control.Locate.ie.css
 L.Control.Locate.js
+l.control.geosearch.js
+l.geosearch.provider.esri.js
+l.geosearch.css
 images/locate.png
 images/locate_touch.png
 images/spinner.gif
+images/layers.png
+images/marker-icon.png
+images/marker-shadow.png
+
