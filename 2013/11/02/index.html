@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<title>ReadyMap WebGL x Leaflet x GSI Tiles</title>
+<meta charset='UTF-8'>	
+<script src="http://demo.pelicanmapping.com/rmweb/webgl/tests/leaflet/dist/leaflet.js"></script>
+<script type="text/javascript" src="http://demo.pelicanmapping.com/rmweb/webgl/js/jquery/jquery-1.4.2.js"></script>
+<script type="text/javascript" src="http://demo.pelicanmapping.com/rmweb/webgl/build/readymap-debug-0.0.1.js"></script>
+<link rel="stylesheet" 
+  href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.css" />
+<!--[if lte IE 8]>
+<link rel="stylesheet"
+  href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.ie.css" />
+<![endif]-->
+<style type="text/css">
+body {
+  background: black;
+  overflow:hidden;
+  padding:0;
+  margin:0;
+  color: white;
+  font-family:Helvetica,Verdana,Arial,sans-serif;
+}
+
+#header {
+  color: #fff;
+}    
+
+#ViewContainer 
+{
+  clear: both;
+  position: absolute;
+}
+
+#DemoHelp {
+  float:right;
+  position:absolute;
+  right: 2px;
+  z-index:100;
+  margin-top: 2px;
+  padding: 4px;
+  width: 140px;
+  background-color: #666;
+	border: 1px solid #999;
+}
+    
+#DemoHelp a:link {color:#be6;}
+#DemoHelp a:visited {color:#be6;}
+#DemoHelp a:hover {color:#be6;}
+</style>
+<script type="text/javascript">
+var map;
+   
+$(document).ready(function () {
+  // クロスドメイン周りのモンキーパッチ
+  osgearth.getURL = function(url) {return url;}
+  osg.Texture.createFromURL = function(imageSource) {
+    var a = new osg.Texture();
+    if (imageSource !== undefined) {
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = imageSource;
+        a.setImage(img);
+    }
+    return a;
+  };
+  // END-OF クロスドメイン周りのモンキーパッチ
+
+  var size = ReadyMap.getWindowSize();
+  var headerHeight = jQuery('#header').height();        
+  size.h -= headerHeight;
+  $("#ViewContainer").width(size.w);
+  $("#ViewContainer").height(size.h);
+        
+  map = new L.Map('ViewContainer', { globe: true });
+  var layer = new L.TileLayer('http://cyberjapandata.gsi.go.jp/xyz/std2012/{z}/{x}/{y}.png', {minZoom: 0, maxZoom: 18, attribution: '地理院地図'});
+  map.setView(new L.LatLng(38.3, 141.0), 7).addLayer(layer);
+  map.finalizeGlobe();
+});
+</script>
+</head>
+<body>
+<div id="header">
+<p>ReadyMap WebGL x Leaflet x GSI Tiles</p>
+</div>
+<div id="ViewContainer"></div>
+<div id="DemoHelp">source:<a href="http://cyberjapan.jp/">国土地理院</a></div>
+</body>
+</html>
