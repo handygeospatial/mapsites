@@ -257,10 +257,10 @@ __image__ = image;
       os[i] = layer;
     }
     map = L.map('map', {center: [36, 140], zoom: 7, layers: layers['std']});
-    map.addControl(csc);
-    new L.Control.GeoSearch({provider: new L.GeoSearch.Provider.Esri(), position: 'topleft', showMarker: false}).addTo(map);
+//    map.addControl(csc);
+//    new L.Control.GeoSearch({provider: new L.GeoSearch.Provider.Esri(), position: 'topleft', showMarker: false}).addTo(map);
     L.control.layers(layers, null, {position: 'topright'}).addTo(map);
-    L.control.locate({follow: true, stopFollowingOnDrag: true, position: 'bottomright'}).addTo(map);
+//    L.control.locate({follow: true, stopFollowingOnDrag: true, position: 'bottomright'}).addTo(map);
     map.zoomControl.setPosition('bottomright');
     storage.size(map.attributionControl.addAttribution, alert);
     
