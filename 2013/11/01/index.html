@@ -7,14 +7,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <link rel="apple-touch-icon" href="https://si0.twimg.com/profile_images/666603054/r.png"/>
-<title>GSI Maps Offline</title>
+<title>GSI Maps with Cache</title>
 <style>
 html, body, #map {
   width: 100%; height: 100%; margin: 0; padding: 0; border: 0;
 }
-div.leaflet-control-layers, div.leaflet-control-zoom, div.leaflet-control-locate {background: rgba(255, 255, 255, 0.75); -webkit-filter: opacity(0.61)}
+div.leaflet-control-layers,div.leaflet-control-zoom, div.leaflet-control-locate {background: rgba(255, 255, 255, 0.75); -webkit-filter: opacity(0.61)}
 .cache-size-control {background: rgba(255, 255, 0, 0.61);}
-.leaflet-container{background-color: #fff; -webkit-filter: grayscale(100%) blur(0.2px) invert(100%);}
+.leaflet-container{background: #fff; -webkit-filter: grayscale(100%) blur(0.2px) invert(100%);}
 </style>
 <link rel="stylesheet" href="leaflet.css" />
 <link rel="stylesheet" href="L.Control.Locate.css" />
@@ -225,7 +225,7 @@ __image__ = image;
           storage.size(function(size) {
             c.removeChild(c.firstChild);
             c.appendChild(document.createTextNode(
-              size + ' tiles in offline cache / z = ' + map.getZoom()));
+              size + ' tiles in cache / z = ' + map.getZoom()));
           }, function() {})
         });
         map.fire('moveend');
@@ -240,6 +240,7 @@ __image__ = image;
       {name: 'std2012', ext: 'png'},
       {name: 'blank', ext: 'png'},
       {name: 'english', ext: 'png'},
+      {name: 'relief', ext: 'png'},
       {name: 'ort', ext: 'jpg'},
       {name: 'gazo1', ext: 'jpg'},
       {name: 'gazo2', ext: 'jpg'},
@@ -251,14 +252,14 @@ __image__ = image;
     var layers = {};
     for(i in os) {
       var o = os[i];
-      var layer = new StorageTileLayer('http://cyberjapandata.gsi.go.jp/xyz/' + o.name + '/{z}/{x}/{y}.' + o.ext, {attribution: '国土地理院', storage: storage, tn: o.name});
+      var layer = new StorageTileLayer('http://cyberjapandata.gsi.go.jp/xyz/' + o.name + '/{z}/{x}/{y}.' + o.ext, {attribution: "<a href='http://portal.cyberjapan.jp/help/termsofuse.html'>地理院タイル</a>", storage: storage, tn: o.name});
       layers[o.name] = layer;
       os[i] = layer;
     }
     map = L.map('map', {center: [36, 140], zoom: 7, layers: layers['std']});
     map.addControl(csc);
-    new L.Control.GeoSearch({provider: new L.GeoSearch.Provider.Esri(), position: 'bottomleft', showMarker: false}).addTo(map);
-    L.control.layers(layers, null, {position: 'bottomleft'}).addTo(map);
+    new L.Control.GeoSearch({provider: new L.GeoSearch.Provider.Esri(), position: 'topleft', showMarker: false}).addTo(map);
+    L.control.layers(layers, null, {position: 'topright'}).addTo(map);
     L.control.locate({follow: true, stopFollowingOnDrag: true, position: 'bottomright'}).addTo(map);
     map.zoomControl.setPosition('bottomright');
     storage.size(map.attributionControl.addAttribution, alert);
