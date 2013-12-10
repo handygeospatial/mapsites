@@ -1,0 +1,54 @@
+<!doctype html>
+<head>
+<!-- thanks https://gist.github.com/tmcw/3943330 -->
+<!-- CC0 -->
+</head>
+<body>
+<script src="http://d3js.org/d3.v2.min.js"></script>
+<script>
+  var width = 960, height = 500, 
+    proj = d3.geo.mercator().scale(1024).translate([512, 256]);
+
+  var svg = d3.select('body').append('svg')
+    .attr('width', width).attr('height', height).call(d3.behavior.zoom()
+      .translate(proj.translate()).scale(proj.scale()).on('zoom', redraw));
+  var g = svg.append('g').attr('id', 'tiles');
+
+  function tileUrl(d) {return 'http://cyberjapandata.gsi.go.jp/xyz/std2012/' + 
+    d.join('/') + '.png';}
+
+  function redraw() {
+    if (d3.event) {
+      proj.translate(d3.event.translate).scale(d3.event.scale);
+    }
+    var t = proj.translate(),
+        s = proj.scale(),
+        z = Math.max(Math.log(s) / Math.log(2) - 8, 0);
+        rz = Math.floor(z),
+        ts = 256 * Math.pow(2, z - rz);
+    var tile_origin = [s / 2 - t[0], s / 2 - t[1]];
+    var tiles = [];
+    var cols = d3.range(Math.max(0, Math.floor((tile_origin[0] - width) / ts)),
+        Math.max(0, Math.ceil((tile_origin[0] + width) / ts)));
+    var rows = d3.range(Math.max(0, Math.floor((tile_origin[1] - height) / ts)),
+        Math.max(0, Math.ceil((tile_origin[1] + height) / ts)));
+    cols.forEach(function(x) {
+      rows.forEach(function(y) {
+        tiles.push([Math.floor(z), x, y]);
+      });
+    });
+
+    var tiles = 
+      g.selectAll('image.tile').data(tiles, function(d) {return d.join(',')});
+
+    tiles.exit().transition().duration(250).style('opacity', 0.0).remove();
+    tiles.enter().append('image').attr('class', 'tile')
+      .attr('xlink:href', tileUrl);
+
+    tiles.attr({width: ts, height: ts })
+      .attr('transform', function(d) {
+        return 'translate(' + [(d[1] * ts) - tile_origin[0], (d[2] * ts) - tile_origin[1]] + ')';
+      })
+  }
+  redraw();
+</script>

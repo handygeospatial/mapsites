@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+<!-- CC0 -->
+<!-- many thanks to http://bl.ocks.org/3943330 -->
+<script src='http://d3js.org/d3.v3.min.js'></script>
+<script>
+  var proj = d3.geo.mercator().scale(1024).translate([512, 256]);
+//  var path = d3.geo.path().projection(projection);
+
+  var svg = s3.select('body').append('svg').
+    attr('width', 900).attr('height', 600).
+    call(d3.behavior.zoom().translate(proj.translate()).scale(proj.scale()).
+    on('zoom', redraw));
+  var g = svg.append('g').attr('id', 'tiles');
+
+  function tileUrl(d) {
+    return 'http://cyberjapandata.gsi.go.jp/xyz/std2012/' + d.join('/') + '.png';
+  }
+
+  function redraw() {
+    if(d3.event) {
+      proj.translate(d3.event.translate).scale(d3.event.scale);
+    }
+    var t = proj.translate(),
+        s = proj.scale(),
+        z = Math.max(Math.log(s) / Math.log(2) - 8, 0);
+        rz = Math.floor(z),
+        ts = 256 * Math.pow(2, z - rz);
+
+    var tile_origin = [s / 2 - t[0], s / 2 - t[1]];
+    var tiles = [];
+    var cols = d3.range(Math.max(0, Math.floor((tile_origin[0] - width) / ts)),
+        Math.max(0, Math.ceil((tile_origin[0] + width) / ts)));
+    var rows = d3.range(Math.max(0, Math.floor((tile_origin[1] - height) / ts)),
+        Math.max(0, Math.ceil((tile_origin[1] + height) / ts)));
+    cols.forEach(function(x) {
+        rows.forEach(function(y) {
+            tiles.push([Math.floor(z), x, y]);
+        });
+    });
+
+    var tiles = tileg.selectAll('image.tile')
+        .data(tiles, function(d) { return d.join(',') });
+    tiles.exit()
+        .transition()
+        .duration(250)
+        .style("opacity", 0.0)
+        .remove();
+    tiles.enter().append('image')
+        .attr('class', 'tile')
+        .attr('xlink:href', tileUrl);
+    tiles.attr({ width: ts, height: ts })
+        .attr('transform', function(d) {
+            return 'translate(' + [(d[1] * ts) - tile_origin[0], (d[2] * ts) - tile_origin[1]] + ')';
+        })
+    xAxis.attr("x1", t[0]).attr("x2", t[0]);
+    yAxis.attr("y1", t[1]).attr("y2", t[1]);
+  }
+
+  redraw();
+</head>
+<body>
+
+</body>
+</html>

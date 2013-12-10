@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+  <title>vectiles mix-in</title>
+  <meta charset='UTF-8'>
+  <link rel='stylesheet' href='http://leafletjs.com/dist/leaflet.css'>
+  <script src='http://leafletjs.com/dist/leaflet.js'></script>
+  <script src='TileLayer.GeoJSON.js'></script>
+  <script src='leaflet-hash.js'></script>
+  <style>
+  html, body, #map {margin: 0; padding: 0; width: 100%; height: 100%;}
+  </style>
+</head>
+<body>
+  <div id='map'/>
+  <script>
+_maki = {
+  'atm': L.icon({iconUrl: 'maki/bank-24.png'}),
+  'bank': L.icon({iconUrl: 'maki/bank-24.png'}),
+  'bar': L.icon({iconUrl: 'maki/bar-24.png'}),
+  'bicycle': L.icon({iconUrl: 'maki/bicycle-24.png'}),
+  'books': L.icon({iconUrl: 'maki/shop-24.png'}),
+  'bus_stop': L.icon({iconUrl: 'maki/bus-24.png'}),
+  'cafe': L.icon({iconUrl: 'maki/cafe-24.png'}),
+  'car': L.icon({iconUrl: 'maki/shop-24.png'}),
+  'cinema': L.icon({iconUrl: 'maki/cinema-24.png'}),
+  'clothes': L.icon({iconUrl: 'maki/shop-24.png'}),
+  'convenience': L.icon({iconUrl: 'maki/shop-24.png'}),
+  'fast_food': L.icon({iconUrl: 'maki/fast-food-24.png'}),
+  'florist': L.icon({iconUrl: 'maki/shop-24.png'}),
+  'fire_station': L.icon({iconUrl: 'maki/fire-station-24.png'}),
+  'fuel': L.icon({iconUrl: 'maki/fuel-24.png'}),
+  'gate': L.icon({iconUrl: 'maki/square-stroked-24.png'}),
+  'gift': L.icon({iconUrl: 'maki/shop-24.png'}),
+  'hairdresser': L.icon({iconUrl: 'maki/shop-24.png'}),
+  'hospital': L.icon({iconUrl: 'maki/hospital-24.png'}),
+  'hostel': L.icon({iconUrl: 'maki/lodging-24.png'}),
+  'hotel': L.icon({iconUrl: 'maki/lodging-24.png'}),
+  'jewelry': L.icon({iconUrl: 'maki/shop-24.png'}),
+  'level_crossing': L.icon({iconUrl: 'maki/roadblock-24.png'}),
+  'library': L.icon({iconUrl: 'maki/library-24.png'}),
+  'lodging': L.icon({iconUrl: 'maki/lodging-24.png'}),
+  'memorial': L.icon({iconUrl: 'maki/monument-24.png'}),
+  'motel': L.icon({iconUrl: 'maki/lodging-24.png'}),
+  'parking': L.icon({iconUrl: 'maki/parking-24.png'}),
+  'pharmacy': L.icon({iconUrl: 'maki/pharmacy-24.png'}),
+  'place_of_worship': L.icon({iconUrl: 'maki/place-of-worship-24.png'}),
+  'playground': L.icon({iconUrl: 'maki/playground-24.png'}),
+  'police': L.icon({iconUrl: 'maki/police-24.png'}),
+  'post_box': L.icon({iconUrl: 'maki/post-24.png'}),
+  'post_office': L.icon({iconUrl: 'maki/post-24.png'}),
+  'pub': L.icon({iconUrl: 'maki/bar-24.png'}),
+  'restaurant': L.icon({iconUrl: 'maki/restaurant-24.png'}),
+  'station': L.icon({iconUrl: 'maki/rail-metro-24.png'}),
+  'subway_entrance': L.icon({iconUrl: 'maki/rail-metro-24.png'}),
+  'supermarket': L.icon({iconUrl: 'maki/shop-24.png'}),
+  'telephone': L.icon({iconUrl: 'maki/telephone-24.png'}),
+  'theatre': L.icon({iconUrl: 'maki/town-hall-24.png'}),
+  'toilets': L.icon({iconUrl: 'maki/toilets-24.png'}),
+  'traffic_signals': L.icon({iconUrl: 'maki/roadblock-24.png'}),
+  'tram_stop': L.icon({iconUrl: 'maki/rail-metro-24.png'}),
+  'tree': L.icon({iconUrl: 'maki/park2-24.png'})
+};
+_default_icon = L.icon({iconUrl: 'maki/cross-24.png'});
+function maki(kind) {
+  return _maki[kind] || _default_icon;
+}
+
+map = new L.Map('map', {zoom: 17, center: [35.675513, 139.716836]});
+hash = new L.Hash(map);
+map.addLayer(new L.TileLayer(
+  'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+  {attribution: '地理院タイル'}));
+map.addLayer(new L.TileLayer.GeoJSON(
+  'http://tile.openstreetmap.us/vectiles-pois/{z}/{x}/{y}.json',
+  {attribution: '(c) OpenStreetMap contributors', minZoom: 14,
+  },
+  {onEachFeature: function(feature, layer) {
+     layer.bindPopup(feature.properties.kind + '/' + feature.properties.name);
+     layer.setIcon(maki(feature.properties.kind));
+   },
+   filter: function(feature, layer) {
+     return true//feature.properties.kind != 'tree';
+   }
+  }));
+  </script>
+</body>
+</html> 
