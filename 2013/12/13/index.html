@@ -8,7 +8,7 @@
   <script src='TileLayer.GeoJSON.js'></script>
   <script src='leaflet-hash.js'></script>
   <style>
-  html, body, #map {margin: 0; padding: 0; width: 100%; height: 100%;}
+  html, body, #mapdiv {margin: 0; padding: 0; width: 100%; height: 100%;}
   </style>
 </head>
 <body>
@@ -73,8 +73,7 @@ map.addLayer(new L.TileLayer(
   {attribution: '地理院タイル'}));
 map.addLayer(new L.TileLayer.GeoJSON(
   'http://tile.openstreetmap.us/vectiles-pois/{z}/{x}/{y}.json',
-  {attribution: '(c) OpenStreetMap contributors', minZoom: 14,
-  },
+  {attribution: '(c) OpenStreetMap contributors', minZoom: 14},
   {onEachFeature: function(feature, layer) {
      layer.bindPopup(feature.properties.kind + '/' + feature.properties.name);
      layer.setIcon(maki(feature.properties.kind));
