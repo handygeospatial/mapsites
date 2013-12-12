@@ -64,7 +64,7 @@ _maki = {
 _default_icon = L.icon({iconUrl: 'maki/cross-24.png'});
 function maki(kind) {
   return _maki[kind] || _default_icon;
-}
+};
 
 map = new L.Map('map', {zoom: 18, center: [35.667054, 139.708626]});
 hash = new L.Hash(map);
