@@ -66,10 +66,10 @@ function maki(kind) {
   return _maki[kind] || _default_icon;
 }
 
-map = new L.Map('map', {zoom: 17, center: [35.667054, 139.708626]});
+map = new L.Map('map', {zoom: 18, center: [35.667054, 139.708626]});
 hash = new L.Hash(map);
 map.addLayer(new L.TileLayer(
-  'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+  'http://cyberjapandata.gsi.go.jp/xyz/std2012/{z}/{x}/{y}.png',
   {attribution: '地理院タイル'}));
 map.addLayer(new L.TileLayer.GeoJSON(
   'http://tile.openstreetmap.us/vectiles-pois/{z}/{x}/{y}.json',
