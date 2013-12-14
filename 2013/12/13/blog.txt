@@ -41,18 +41,41 @@ http://handygeospatial.github.io/mapsites/2013/12/13/:title
 ・地理院タイルは、http://portal.cyberjapan.jp/help/development.html#ichiran:title にある標準地図（在来版）
 ・OSMのPOIデータは、migurskiさんの http://openstreetmap.us/~migurski/vector-datasource/#pois:title
 ・POIデータのアイコンは、 https://www.mapbox.com/maki/:title
-・
+・ウェブ地図APIは、http://leafletjs.com:title
+・https://github.com/glenrobertson/leaflet-tilelayer-geojson/:title を使用
+・https://github.com/mlevans/leaflet-hash:title を使用
+
+ソースコードの解説をしたいところだが、あとで書くメソッドに委ねることにしよう。
+
+大縮尺での効果を強調するため、小縮尺ではベクトルタイルをロードしないようにしている。migurski さんのベクトルタイルでは、小縮尺では数を絞ったPOIを提供されており、そのあたりの工夫をあえて見せないような実装を私がしているところがある。
 
 ***IE8で動かないこと。CORSの重要性。
-いきなり制限事項
+いきなり制限事項になるが、IE11では動くが、IE8では動かない。
+普通の方法ではIE8はCORS（cross-origin resource sharing）をケアしてくれないので、migurskiさん側でCORS設定していただいているにも関わらず、IE8はクロスドメイン制約で転ぶ。
 http://caniuse.com/cors:title
+ただ、既にIE6は終わりが見えており、IE8ではsupported somewhatということなので、もうCORSで悩むことは過去の話になってくるものと考えてしまおう。
+
+MSDN Blogsに回避手段が載っている（http://blogs.msdn.com/b/ieinternals/archive/2010/05/13/xdomainrequest-restrictions-limitations-and-workarounds.aspx:title ）が、いまはここにリソースを注入しないことにする。
+
+CORSについては時間が解決してくれることをもう確度をもって期待できるので、半年後の世界を考えるのであれば、CORSは解決した問題と見なすことにしよう。
 
 **ベクトルタイルのつくりかた
+今回の実験では migurski さんの敷いたレールに乗れたので回避できたが、本来、様々なデータが重なりあう世界を求めるとすれば、ベクトルタイルの作り方をコモディティ化する必要がある。これについては私もまだ見えていない。多分、これも migurski さん率いところの http://tilestache.org:title が一つの候補となることだろう。
+
+この節のタイトルは、 http://qiita.com/nyampire/items/e48304d1a1e43a359945:title にちなんでいる。tmcw さんの原文を nyampire さんが翻訳したものである。これも是非読むべきものである。
 
 **タイルのメリット。
+このデモで見えた（ベクトル）タイルのメリットは次の通りであろう。
+・タイルがスケール依存であることがプラスに利いている。縮尺が大きくなればそれだけ多くの種類のPOIを表示するようになっている。
+・タイルがスケールすることがよく示されている。タイルによらなければ、これだけ多くのPOIを「1レイヤ」として提示することはできないだろう。
 
 **プライベートデータのミックスインに向けて。Dropboxとか。
+今回エントリの線にしたがって、パブリックデータのベクトルタイルによるミックスインの可能性が示されたあとは、タイルのWebとの親和性を活用して、普通のクラウド・ストレージをつかって、プライベートデータのミックスインがパブリックサービス上で、クラウド・ストレージ・アグノスティックに実現可能であるという線を示すべきだろう。
+
+**リアルタイム・ベクトルタイル
+リアルタイム・ベクトルタイルについては、おそらくタイルURIに ?#{Time.now.to_i} でもつけてキャッシュを無効化した上で、JavaScript側でリフレッシュすることで実現できるのではないか。これも試してみる必要がある。
 
 **このエントリーでカバーしきれなかったネタ
 ・FOSS4G Advent Calendar で13日の金曜日担当であったからJSONネタにしたこと。
 ・migurskiさんはすごい人っぽいということ。
+・このエントリみたいに、行き先ドリブンで説明を端折り気味に一息に説明してしまうことを http://www.ac.cyberhome.ne.jp/~kayoko-164/taiga/taigasaigo2.html:title=名付けて、桶狭間戦法。
