@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <!-- thx https://github.com/ebrelsford/leaflet-tilelayer-vector -->
+  <meta charset='UTF-8'>
+  <meta name="viewport" 
+   content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" 
+   content="black-translucent" />
+  <link rel="apple-touch-icon" 
+   href="https://si0.twimg.com/profile_images/666603054/r.png"/>
+  <title>vectiles bus route</title>
+  <link rel='stylesheet' href='http://cdn.leafletjs.com/leaflet-0.7/leaflet.css'>
+  <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.label/leaflet.label.css">
+  <script src='http://cdn.leafletjs.com/leaflet-0.7/leaflet.js'></script>
+  <script src="http://leaflet.github.io/Leaflet.label/leaflet.label.js"></script>
+  <script src="communist.min.js"></script>
+  <script src="TileCache.js"></script>
+  <script src="TileQueue.js"></script>
+  <script src="AbstractWorker.js"></script>
+  <script src="CommunistWorker.js"></script>
+  <script src="TileLayer.GeoJSON.js"></script>
+  <script src="TileLayer.Overzoom.js"></script>
+  <script src="Leaflet.label-patch.js"></script>
+  <script src="leaflet-hash.js"></script>
+  <style>
+  html, body, #mapdiv {margin: 0; padding: 0; width: 100%; height: 100%;}
+  </style>
+</head>
+<body>
+  <div id='mapdiv'/>
+  <script>
+icon = L.icon({iconUrl: 'http://handygeospatial.github.io/mapsites/2013/12/13/maki/bus-24.png'});
+map = new L.Map('mapdiv', {zoom: 15, center: [35.71725, 139.733747]});
+hash = new L.Hash(map);
+map.addLayer(new L.TileLayer(
+  'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+  {attribution: '地理院タイル', minZoom: 2}));
+map.addLayer(new L.TileLayer.Vector(
+  'http://www.handygeospatial.info/2014/01/01/{z}/{x}/{y}.geojson',
+  {attribution: '国土数値情報（バスルートデータ）　国土交通省', 
+   unloadInvisibleTiles: true, minZoom: 15, 
+   serverZooms: [15]},
+  {style: { // not used
+        "clickable": true,
+        "color": "#00F",
+        "fillColor": "#00F",
+        "weight": 5.0,
+        "opacity": 0.3,
+        "fillOpacity": 0.2
+    },
+   onEachFeature: function(feature, layer) {
+     layer.bindPopup("事業者名: " + feature.properties.N07_002 + 
+                     "<br/>バス系統: " + feature.properties.N07_003);
+//     layer.setIcon(icon);
+   }
+  }));
+  </script>
+</body>
+</html> 
+
