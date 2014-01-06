@@ -9,7 +9,7 @@
  *   Match D3 idioms for .classed(), .style(), etc
  *   Work on allowing feature popups, etc.
  */
-// with minor change by hfu 20140107 (for(key in tjData.objects))
+// with a minor change by hfu 20140107 (for(key in tjData.objects))
 
 L.TileLayer.d3_topoJSON =  L.TileLayer.extend({
   onAdd : function(map) {
