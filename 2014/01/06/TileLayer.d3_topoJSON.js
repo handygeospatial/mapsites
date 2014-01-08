@@ -35,6 +35,7 @@ L.TileLayer.d3_topoJSON =  L.TileLayer.extend({
         } else {
           for(var key in tjData.objects) {
             var geoJson = topojson.feature(tjData, tjData.objects[key]);
+theGeoJson = geoJson;
             tile.xhr = null;
             tile.nodes = d3.select(map._container).select("svg").append("g");
             tile.nodes.selectAll("path")
@@ -42,7 +43,13 @@ L.TileLayer.d3_topoJSON =  L.TileLayer.extend({
             .append("path")
               .attr("d", self._path)
               .attr("class", self.options.class)
-              .attr("style", self.options.style);
+              .attr("style", self.options.style)
+              .append("title").text(function(d) {
+                var s = '';
+                for(key in d.properties) {
+                  s += key + ': ' + d.properties[key] + '\n';
+                }
+                return s;});
           }
         }
       });

@@ -38,7 +38,8 @@ map.addLayer(new L.TileLayer(
   {attribution: '地理院タイル', minZoom: 13, maxZoom: 13}));
 
 map.addLayer(new L.TileLayer.d3_topoJSON(
-  'http://www.handygeospatial.info/2014/01/06/topojson_clipped/{z}/{x}/{y}.topojson',
+  'http://www.handygeospatial.info/2014/01/06/' + 
+    'topojson_clipped/{z}/{x}/{y}.topojson',
   {class: 'es',
    attribution: '国土数値情報（小学校区データ）　国土交通省', 
    minZoom: 13, maxZoom: 13,
