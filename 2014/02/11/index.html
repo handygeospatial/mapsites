@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <meta name="viewport" 
+   content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" 
+   content="black-translucent" />
+  <title>国土数値情報（地価公示）</title>
+  <link rel='stylesheet' href='http://leafletjs.com/dist/leaflet.css'>
+  <script src='http://leafletjs.com/dist/leaflet.js'></script>
+  <script src="leaflet-hash.js"></script>
+  <script src="TileLayer.GeoJSON.js"></script>
+  <style>
+  html, body, #mapdiv {margin: 0; padding: 0; width: 100%; height: 100%;}
+  </style>
+</head>
+<body>
+  <div id='mapdiv'/>
+  <script>
+function _tr(prop, name) {
+  if(prop[name] == '' || prop[name] == undefined) { 
+    return '';
+  } else {
+    return "<tr><td>" + name + "</td><td>" + prop[name] + "</td></tr>";
+  }
+}
+
+function render_properties(prop) {
+  var s = ''
+  for(i in prop) {
+    s += _tr(prop, i);
+  }
+  return "<table border='1'>" + s + "</table>";
+}
+
+icon = L.icon({
+  iconUrl: 'http://cyberjapan.jp/symbols/090.bmp', iconSize: [16, 16]});
+map = new L.Map('mapdiv', {zoom: 14, center: [36.0812, 140.2242]});
+hash = new L.Hash(map);
+map.addLayer(new L.TileLayer(
+  'http://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
+  {attribution: '地理院タイル'}));
+map.addLayer(new L.TileLayer.GeoJSON(
+  'http://www.handygeospatial.info/2014/01/22/{z}/{x}/{y}.geojson',
+  {attribution: '国土数値情報（地価公示）', unloadInvisibleTiles: true,
+   minZoom: 14, maxZoom: 18},
+  {style: {"clickable": true},
+   onEachFeature: function(feature, layer) {
+     layer.bindPopup(render_properties(feature.properties));
+     layer.setIcon(icon);
+   }
+  }));
+  </script>
+</body>
+</html> 
+
