@@ -19,18 +19,10 @@
 <body>
   <div id='mapdiv'/>
   <script>
-function _tr(prop, name) {
-  if(prop[name] == '' || prop[name] == undefined) { 
-    return '';
-  } else {
-    return "<tr><td>" + name + "</td><td>" + prop[name] + "</td></tr>";
-  }
-}
-
 function render_properties(prop) {
   var s = ''
-  for(i in prop) {
-    s += _tr(prop, i);
+  for(name in prop) {
+    s += "<tr><td>" + name + "</td><td>" + prop[name] + "</td></tr>";
   }
   return "<table border='1'>" + s + "</table>";
 }
