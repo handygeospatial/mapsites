@@ -42,8 +42,11 @@ icon = L.icon({
 map = new L.Map('mapdiv', {zoom: 16, center: [35.6762, 139.7653]});
 hash = new L.Hash(map);
 map.addLayer(new L.TileLayer(
+  'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+  {attribution: '地理院タイル', minZoom: 0, maxZoom: 11}));
+map.addLayer(new L.TileLayer(
   'http://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
-  {attribution: '地理院タイル'}));
+  {attribution: '地理院タイル', minZoom: 12, maxZoom: 18}));
 map.addLayer(new L.TileLayer.GeoJSON(
   'http://www.handygeospatial.info/2014/01/22/{z}/{x}/{y}.geojson',
   {attribution: '国土数値情報（地価公示）', unloadInvisibleTiles: true,
