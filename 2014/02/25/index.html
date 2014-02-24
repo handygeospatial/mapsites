@@ -36,7 +36,7 @@ map.addLayer(new L.TileLayer(
   {attribution: '地理院タイル'}));
 layer = new L.TileLayer.GeoJSON(
   'http://rtvt.herokuapp.com/xyz/{z}/{x}/{y}.geojson',
-  {attribution: '国土数値情報（避難施設）', unloadInvisibleTiles: true,
+  {attribution: 'リアルタイム・ベクトルタイル', unloadInvisibleTiles: true,
    minZoom: 11, maxZoom: 18},
   {style: {"clickable": true},
    onEachFeature: function(feature, layer) {
