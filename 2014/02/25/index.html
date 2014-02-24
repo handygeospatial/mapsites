@@ -34,7 +34,7 @@ hash = new L.Hash(map);
 map.addLayer(new L.TileLayer(
   'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
   {attribution: '地理院タイル'}));
-map.addLayer(new L.TileLayer.GeoJSON(
+layer = new L.TileLayer.GeoJSON(
   'http://rtvt.herokuapp.com/xyz/{z}/{x}/{y}.geojson',
   {attribution: '国土数値情報（避難施設）', unloadInvisibleTiles: true,
    minZoom: 11, maxZoom: 18},
@@ -43,7 +43,10 @@ map.addLayer(new L.TileLayer.GeoJSON(
      layer.bindPopup(render_properties(feature.properties));
      layer.setIcon(icon);
    }
-  }));
+  });
+map.addLayer(layer);
+refresh = function() {layer.redraw(); setTimeout(refresh, 1500)};
+refresh();
   </script>
 </body>
 </html>
