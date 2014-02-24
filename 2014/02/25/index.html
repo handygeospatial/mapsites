@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <meta name="viewport" 
+   content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" 
+   content="black-translucent" />
+  <title>リアルタイム・ベクトルタイル</title>
+  <link rel='stylesheet' href='http://leafletjs.com/dist/leaflet.css'>
+  <script src='http://leafletjs.com/dist/leaflet.js'></script>
+  <script src="leaflet-hash.js"></script>
+  <script src="TileLayer.GeoJSON.js"></script>
+  <style>
+  html, body, #mapdiv {margin: 0; padding: 0; width: 100%; height: 100%;}
+  </style>
+</head>
+<body>
+  <div id='mapdiv'/>
+  <script>
+function render_properties(prop) {
+  var s = ''
+  for(name in prop) {
+    s += "<tr><td>" + name + "</td><td>" + prop[name] + "</td></tr>";
+  }
+  return "<table border='1'>" + s + "</table>";
+}
+
+icon = L.icon({iconUrl: 'http://cyberjapan.jp/symbols/129.bmp',
+  iconSize: [20, 20]});
+map = new L.Map('mapdiv', {zoom: 14, center: [35.6850, 139.7512]});
+hash = new L.Hash(map);
+map.addLayer(new L.TileLayer(
+  'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+  {attribution: '地理院タイル'}));
+map.addLayer(new L.TileLayer.GeoJSON(
+  'http://rtvt.herokuapp.com/xyz/{z}/{x}/{y}.geojson',
+  {attribution: '国土数値情報（避難施設）', unloadInvisibleTiles: true,
+   minZoom: 11, maxZoom: 18},
+  {style: {"clickable": true},
+   onEachFeature: function(feature, layer) {
+     layer.bindPopup(render_properties(feature.properties));
+     layer.setIcon(icon);
+   }
+  }));
+  </script>
+</body>
+</html>
+
