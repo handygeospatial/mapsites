@@ -27,7 +27,7 @@ if(document.location.href.split('?')[1]) {
 }
 var lng0 = tile2lng(zxy[1], zxy[0]);
 var lng1 = tile2lng(zxy[1] + 1, zxy[0]);
-var lat0 = tile2lat(zxy[2] - 1, zxy[0]);
+var lat0 = tile2lat(zxy[2] + 1, zxy[0]);
 var lat1 = tile2lat(zxy[2], zxy[0]);
 var bounds = [[lat0, lng0], [lat1, lng1]];
 
