@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<script src="http://leafletjs.com/dist/leaflet.js"></script>
+<link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css">
+<style>
+body {padding: 0; margin: 0}
+html, body, #map {height: 100%; width: 100%;}
+.leaflet-container {background: #fff;}
+</style>
+</head>
+<body>
+<div id="map">
+<script>
+tile2lng = function(x, z) {
+  return x / Math.pow(2, z) * 360 - 180;
+}
+tile2lat = function(y, z) {
+  var n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
+  return 180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+}
+
+var zxy = [12, 3706, 1539];
+if(document.location.href.split('?')[1]) {
+  zxy = document.location.href.split('?')[1].split('/').map(parseFloat);
+}
+var lng0 = tile2lng(zxy[1], zxy[0]);
+var lng1 = tile2lng(zxy[1] + 1, zxy[0]);
+var lat0 = tile2lat(zxy[2] - 1, zxy[0]);
+var lat1 = tile2lat(zxy[2], zxy[0]);
+var bounds = [[lat0, lng0], [lat1, lng1]];
+
+var map = L.map('map');
+L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', 
+  {attribution: '地理院タイル'}).addTo(map);
+L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map);
+map.fitBounds(bounds);
+</script>
+</body>
+</html>
