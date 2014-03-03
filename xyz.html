@@ -21,10 +21,10 @@ tile2lat = function(y, z) {
   return 180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
 }
 
-var zxy = [12, 3706, 1539];
-if(document.location.href.split('?')[1]) {
-  zxy = document.location.href.split('?')[1].split('/').map(parseFloat);
+if(!document.location.href.split('?')[1]) {
+  document.location.href += '?16/58509/24181.png';
 }
+var zxy = document.location.href.split('?')[1].split('/').map(parseFloat);
 var lng0 = tile2lng(zxy[1], zxy[0]);
 var lng1 = tile2lng(zxy[1] + 1, zxy[0]);
 var lat0 = tile2lat(zxy[2] + 1, zxy[0]);
