@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no'>
+<title>Dojo Mobile 利用テスト</title>
+<!-- original: http://dojotoolkit.org/documentation/tutorials/1.9/mobile/flickrview/part1/demo/sample1.html -->
+<script src='http://ajax.googleapis.com/ajax/libs/dojo/1.9.2/dojox/mobile/deviceTheme.js'></script>
+<script>
+dojoConfig = {async: true, parseOnLoad: false};
+</script>
+<script src='http://ajax.googleapis.com/ajax/libs/dojo/1.9.2/dojo/dojo.js'></script>
+<script>
+require([
+  'dojox/mobile/parser',
+	'dojox/mobile/compat',
+	'dojo/domReady!',
+	'dojox/mobile/View',
+	'dojox/mobile/Heading',
+	'dojox/mobile/RoundRectList',
+	'dojox/mobile/ListItem',
+	'dojox/mobile/Switch'
+], function (parser) {
+  parser.parse();
+});
+</script>
+</head>
+<body style='visibility: hidden;'>
+<div data-dojo-type='dojox/mobile/View' data-dojo-props='selected: true'>
+<h1 data-dojo-type='dojox/mobile/Heading'>ウェブ地図設定</h1>
+  <ul data-dojo-type="dojox/mobile/RoundRectList">
+    <li data-dojo-type="dojox/mobile/ListItem">標高表示<div data-dojo-type="dojox/mobile/Switch"/></li>
+    <li data-dojo-type="dojox/mobile/ListItem" data-dojo-props="rightText:'標準地図'">背景地図</li>
+			<li data-dojo-type="dojox/mobile/ListItem" data-dojo-props="rightText:'WebSQL'">キャッシュ</li>
+		</ul>
+</div>
+</body>
+</html>
