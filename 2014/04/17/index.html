@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<title>Leaflet Draw x GSI Tiles</title>
+<meta charset='utf-8'>
+<link rel="stylesheet" 
+  href="http://leaflet.github.com/Leaflet.draw/lib/leaflet/leaflet.css" />
+<link rel="stylesheet" 
+  href="http://leaflet.github.com/Leaflet.draw/leaflet.draw.css" />
+<script src="http://leaflet.github.com/Leaflet.draw/lib/leaflet/leaflet.js">
+</script>
+<script src="http://leaflet.github.com/Leaflet.draw/leaflet.draw.js">
+</script>
+</head>
+<body>
+<div id="map" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"/>
+<script>
+gsi = L.tileLayer(
+  'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', 
+  {maxZoom: 18, attribution: '地理院タイル（標準地図）'});
+map = new L.Map(
+  'map', {layers: [gsi], center: new L.LatLng(35, 135), zoom: 15 });
+
+var drawnItems = new L.FeatureGroup();
+map.addLayer(drawnItems);
+
+var drawControl = new L.Control.Draw({
+	draw: {
+		polygon: {
+			allowIntersection: false,
+			drawError: {color: '#b00b00',	timeout: 1000},
+			shapeOptions: {color: '#bada55'},
+		},
+		polyline: {metric: true},
+		circle: {shapeOptions: {color: '#662d91'}}
+	},
+	edit: {featureGroup: drawnItems}
+});
+map.addControl(drawControl);
+map.on('draw:created', function(e){drawnItems.addLayer(e.layer);});
+</script>
+</body>
+</html>
