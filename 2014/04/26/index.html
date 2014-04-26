@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>MVT Vector Tiles on Leaflet 0.8</title>
+<title>MVT on Leaflet 0.8</title>
 <style>
 body {margin: 0px; border: 0px; padding: 0px;}
 #map {background: rgba(0, 0, 0, 0);}
@@ -33,7 +33,7 @@ resizeMap();
 /*** Layer ***/
 var layer = L.vectorTileLayer({
   vectorRenderer: '',
-  vectorTileSource: {type: 'MapboxTileSource',
+  vectorTileSource: {type: 'MapboxTileSource', renderer: 'CanvasRenderer',
     url: 'http://a.tiles.mapbox.com/v3/mapbox.mapbox-streets-v4/' + 
       '{z}/{x}/{y}.vector.pbf',
     max_zoom: 14},
