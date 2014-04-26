@@ -7,9 +7,6 @@
 <style>
 body {margin: 0px; border: 0px; padding: 0px;}
 #map {background: rgba(0, 0, 0, 0);}
-.label {width: 200px; margin-left: -100px; position: absolute;
-  z-index: 10; text-align: center;}
-.labelInner {padding: 2px; background: white; opacity: 0.75;}
 </style>
 <link rel="stylesheet" href="leaflet-0.8-dev.css">
 </head>
@@ -17,10 +14,12 @@ body {margin: 0px; border: 0px; padding: 0px;}
 <div id="map">
 <script src="leaflet-0.8-dev.js"></script>
 <script src="vector-map.debug.js"></script>
+<script src="leaflet-hash.js"></script>
 <script>
 var map = L.map('map', {});
 map.attributionControl.setPrefix('');
 map.setView([36.088, 140.104], 15);
+hash = new L.Hash(map);
 
 function resizeMap () {
   document.getElementById('map').style.width = window.innerWidth + 'px';
@@ -33,7 +32,7 @@ resizeMap();
 /*** Layer ***/
 var layer = L.vectorTileLayer({
   vectorRenderer: '',
-  vectorTileSource: {type: 'MapboxTileSource', renderer: 'CanvasRenderer',
+  vectorTileSource: {type: 'MapboxTileSource',
     url: 'http://a.tiles.mapbox.com/v3/mapbox.mapbox-streets-v4/' + 
       '{z}/{x}/{y}.vector.pbf',
     max_zoom: 14},
@@ -41,7 +40,7 @@ var layer = L.vectorTileLayer({
   vectorStyles: 'gl_styles.js',
   numWorkers: 1,
   attribution: 'Map data &copy; OpenStreetMap contributors / ' + 
-    'original code: http://vector.io/vector-map/' ,
+    'original code: http://vector.io/vector-map/',
   unloadInvisibleTiles: false,
   updateWhenIdle: false
 });
@@ -52,16 +51,12 @@ window.addEventListener('load', function () {
   frameLoop();
 });
 
-function frame () {
-  layer.render();
-}
-
+function frame(){layer.render();}
 function frameLoop () {
   frame();
   requestAnimationFrame(frameLoop);
 }
 
-// Cross-browser compatibility for requestAnimationFrame
 (function requestAnimationFrameCompatibility () {
     if (window.requestAnimationFrame == undefined) {
         window.requestAnimationFrame = (function () {

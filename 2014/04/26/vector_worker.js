@@ -1,33 +1,15 @@
 importScripts('vector-map-worker.min.js');
-
-// Include individual scripts instead for debugging
-// importScripts('libtess.cat.js');
-// importScripts('mapbox-vector-tile.js');
-// importScripts('geo.js');
-// importScripts('gl.js');
-// importScripts('tile_source.js');
-// importScripts('vector_renderer.js');
-// importScripts('canvas_renderer.js');
-// importScripts('gl_renderer.js');
-// importScripts('gl_builders.js');
-
 var VectorWorker = {};
 VectorWorker.worker = this;
-
-VectorWorker.tiles = {}; // tiles being loaded by this worker (removed on load)
-
+VectorWorker.tiles = {};
 GLBuilders.setTileScale(VectorRenderer.tile_scale);
-
 // Load tile
 VectorWorker.worker.addEventListener('message', function (event) {
     if (event.data.type != 'loadTile') {
         return;
     }
-
-    var tile = event.data.tile; // TODO: keep track of tiles being loaded by this worker
+    var tile = event.data.tile;
     var renderer_type = event.data.renderer_type;
-
-    // TODO: avoid creating tile source on each event
     var tile_source = event.data.tile_source;
     tile_source = TileSource.create(tile_source.type, tile_source.url, tile_source);
 
@@ -51,7 +33,6 @@ VectorWorker.worker.addEventListener('message', function (event) {
             type: 'loadTileCompleted',
             tile: tile
         });
-
         delete VectorWorker.tiles[tile.key];
     });
 });
@@ -61,20 +42,14 @@ VectorWorker.worker.addEventListener('message', function (event) {
     if (event.data.type != 'removeTile') {
         return;
     }
-
     var key = event.data.key;
     var tile = VectorWorker.tiles[key];
-    // console.log("worker remove tile event for " + key);
 
     if (tile != null) {
-        // TODO: let tile source do this
         tile.loading = false;
-
         if (tile.xhr != null) {
             tile.xhr.abort();
-            // console.log("aborted XHR for tile " + tile.key);
         }
-
         delete VectorWorker.tiles[key];
     }
 });
