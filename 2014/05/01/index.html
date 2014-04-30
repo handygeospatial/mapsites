@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <meta name="viewport" 
+   content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" 
+   content="black-translucent" />
+  <title>leaflet-omnivore</title>
+  <link rel='stylesheet' href='leaflet-0.8-dev.css'>
+  <script src='leaflet-0.8-dev.js'></script>
+  <script src='leaflet-hash.js'></script>
+  <script src='leaflet-omnivore.min.js'></script>
+  <style>
+  html, body, #mapdiv {margin: 0; padding: 0; width: 100%; height: 100%;}
+  div.leaflet-container {background: #fff;}
+  </style>
+</head>
+<body>
+  <div id='mapdiv'/>
+  <script>
+map = new L.Map('mapdiv', {zoom: 12, center: [36.0571, 136.2305]});
+hash = new L.Hash(map);
+icon = L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/handygeospatial/cobmaki/' + 
+    'master/dst/C01_03_sannkakutenn_tikakuhenndoukannsokutenn_18_shadow.png', 
+  iconSize: [18, 18]});
+
+map.addLayer(new L.TileLayer(
+  'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+  {attribution: '地理院タイル'}));
+omnivore.csv(
+  'https://raw.githubusercontent.com/shimizu/dataSet/' + 
+    'master/fukui_kindergarten/fukui_kindergarten.csv', 
+  {latfield: '緯度', lonfield: '経度', delimiter: ','},
+  L.geoJson(null, {
+    pointToLayer: function(feature, latlng) {
+      return L.marker(latlng, {icon: icon});
+    },
+    onEachFeature: function(feature, layer) {
+      layer.bindPopup(feature.properties['保育園名']);
+    }
+  })
+).addTo(map);
+  </script>
+</body>
+</html> 
+
