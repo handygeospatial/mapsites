@@ -30,9 +30,10 @@ icon = L.icon({
 map.addLayer(new L.TileLayer(
   'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
   {attribution: '地理院タイル'}));
-omnivore.csv(
-  'fukui_kindergarten.csv', 
-  {latfield: '緯度', lonfield: '経度', delimiter: ','},
+omnivore.geojson(
+  'http://dejima.herokuapp.com/?url=' + 
+  'https://raw.githubusercontent.com/shimizu/dataSet/master/fukui_kindergarten/fukui_kindergarten.geojson', 
+  {},
   L.geoJson(null, {
     pointToLayer: function(feature, latlng) {
       return L.marker(latlng, {icon: icon});

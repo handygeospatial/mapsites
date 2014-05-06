@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <meta name="viewport" 
+   content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" 
+   content="black-translucent" />
+  <title>Cocotile experiment</title>
+  <link rel='stylesheet' 
+    href='http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css'>
+  <script src='http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js'></script>
+  <script src='leaflet-hash.js'></script>
+  <style>
+  html, body, #mapdiv {margin: 0; padding: 0; width: 100%; height: 100%;}
+  </style>
+</head>
+<body>
+  <div id='mapdiv'/>
+  <script>
+function process(req, ctx) {
+  return function () {
+    if (req.readyState !== 4) {return;}
+    var s = req.status;
+    if ((s >= 200 && s < 300) || s === 304) {
+      ctx.font = '20px Arial';
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#fff'
+      var ts = req.responseText.replace("¥n", '').split(',');
+      for(var i = 0; i < ts.length; i++) {
+        ctx.fillText(ts[i], 8, 20 * (i + 1));
+      }
+    }
+  }
+}
+map = new L.Map('mapdiv', {zoom: 14, center: [35.6850, 139.7512]});
+hash = new L.Hash(map);
+map.addLayer(L.tileLayer(
+  'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+  {attribution: '地理院タイル'}));
+ct = L.tileLayer.canvas();
+ct.drawTile = function(canvas, tilePoint, z) {
+  var ctx = canvas.getContext('2d');
+  ctx.strokeRect(0, 0, 255, 255);
+  var req = new XMLHttpRequest();
+  req.onreadystatechange = process(req, ctx);
+  req.open('GET', 'http://cyberjapandata.gsi.go.jp/xyz/cocotile/' + 
+    z + '/' + tilePoint.x + '/' + tilePoint.y + '.csv', true);
+  req.send();
+}
+ct.addTo(map);
+  </script>
+</body>
+</html>
+
