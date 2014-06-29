@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css"/>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/leaflet-hash.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/TileLayer.GeoJSON.js"></script>
+    <style>
+      body {padding: 0; margin: 0}
+      html, body, #mapdiv {height: 100%; width: 100%;}
+      .leaflet-container {background: #fff;}
+      #namediv {position: absolute; bottom: 0%; left: 0%;
+        font-size: large; color: #222;
+        background-color: #ff0; opacity: 0.8; z-index: 9999;}
+    </style>
+  </head>
+  <body>
+    <div id="mapdiv">
+    <div id="namediv">河川にマウスカーソルを合わせて名称表示</div>
+    <script>
+      var std = L.tileLayer(
+        'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+        {attribution: "地理院タイル（標準地図）"});
+      var vec_style = {
+        'color': '#00f',
+        'weight': 4.0,
+        'opacity': 1.0
+      };
+      var vec_hover = {
+        'color': '#f00',
+        'weight': 6.0
+      };
+      var namediv = document.getElementById('namediv');
+      var vec = new L.TileLayer.GeoJSON(
+        'http://www.handygeospatial.info/xyz/river/{z}/{x}/{y}.geojson',
+        //'./river/{z}/{x}/{y}.geojson',
+        {attribution: '国土数値情報（河川データ）',
+         maxNativeZoom: 13,
+         unique: function(f) {
+           var name = f.properties.W05_004;
+           return (name == '名称不明') ? f.properties.fid : name;
+         }
+        },
+        {style: vec_style,
+         onEachFeature: function(feature, layer) {
+           var s = '<div class="popup">';
+           for(var k in feature.properties) {
+             var v = feature.properties[k];
+             s += k + ': ' + v + '<br>';
+           }
+           s += '</div>';
+           layer.bindPopup(s);
+           layer.on('mouseover', function() {
+             namediv.innerHTML = feature.properties.W05_004;
+             layer.setStyle(vec_hover);
+             if(feature.properties.W05_004 == '名称不明') {
+               layer.setStyle({'color': '#aaa'});
+             }
+           });
+           layer.on('mouseout', function() {
+             namediv.innerHTML = '';
+             layer.setStyle(vec_style);
+           });
+         }
+        });
+
+      var map = L.map('mapdiv', {
+        center: [43.0742, 141.3439], zoom: 12,
+        layers: [std, vec]});
+
+      var hash = L.hash(map);
+      L.control.layers({}, {
+        '地理院タイル（標準地図）': std,
+        '国土数値情報（河川データ)': vec
+      }).addTo(map);
+    </script>
+  </body>
+</html>
