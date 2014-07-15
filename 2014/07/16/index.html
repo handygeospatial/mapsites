@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>OpenBeerMap2 using VTS (you get beer icons when z > 15)</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css"/>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/leaflet-hash.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/TileLayer.GeoJSON.js"></script>
+    <style>
+      body {padding: 0; margin: 0}
+      html, body, #mapdiv {height: 100%; width: 100%;}
+      .leaflet-container {background: #fff;}
+    </style>
+  </head>
+  <body>
+    <div id="mapdiv">
+    <script>
+      var std = L.tileLayer(
+        'http://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
+        {attribution: "地理院タイル（淡色地図）" });
+      var beer_icon = L.icon({
+        iconUrl: 'https://openbeermap.github.io/assets/img/beer1.png',
+        iconSize: [34, 40]});
+      var info_icon = L.icon({
+        iconUrl: 'https://handygeospatial.github.io/mapsites/2013/12/13/maki/marker-stroked-24.png',
+        iconSize: [24, 24]});
+      var vec = new L.TileLayer.GeoJSON(
+        'http://vector.mapzen.com/osm/pois/{z}/{x}/{y}.json',
+        {attribution: '(c) OpenStreetMap contributors'}, 
+        {
+          onEachFeature: function(feature, layer) {
+            var popupString = '<div class="popup">';
+            for (var k in feature.properties) {
+              var v = feature.properties[k];
+              popupString += k + ': ' + v + '<br />';
+            }
+            popupString += '</div>';
+            layer.bindPopup(popupString);
+            if(feature.properties.kind == 'pub' || 
+              feature.properties.kind == 'cafe') {
+              layer.setIcon(beer_icon);
+            } else {
+              layer.setIcon(info_icon);
+            }
+          }
+        });
+
+      var map = L.map('mapdiv', {
+        center: [35.6809, 139.7673], zoom: 16,
+        layers: [std, vec]});
+
+      var hash = L.hash(map);
+      L.control.layers({}, {'地理院タイル（淡色地図）': std,
+        'Mapzen VTS': vec}).addTo(map);
+    </script>
+  </body>
+</html>
