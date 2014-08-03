@@ -19,7 +19,7 @@ var map = new ol.Map({target: 'mapdiv',
   ]),
   fractionalZoom: true,
   layers: [
-    new ol.layer.Tile({source: new ol.source.XYZ({url: 
+    new ol.layer.Tile({opacity: 0.4, source: new ol.source.XYZ({url: 
       'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'})}),
     new ol.layer.Vector({
       source: new ol.source.TileVector({
