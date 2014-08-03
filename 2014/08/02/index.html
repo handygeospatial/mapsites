@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="http://ol3js.org/en/master/css/ol.css">
+<style>
+body {padding: 0; margin: 0}
+#mapdiv {height: 100%; width: 100%;}
+</style>
+<script src="http://ol3js.org/en/master/build/ol.js"></script>
+<title>Experimental GSI Vector Tiles via OpenLayers 3 (shift+drag to rotate)</title>
+</head>
+<body>
+<div id="mapdiv"></div>
+<script>
+var map = new ol.Map({target: 'mapdiv',
+  interactions: ol.interaction.defaults().extend([
+    new ol.interaction.DragRotateAndZoom()
+  ]),
+  fractionalZoom: true,
+  layers: [
+    new ol.layer.Tile({source: new ol.source.XYZ({url: 
+      'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'})}),
+    new ol.layer.Vector({
+      source: new ol.source.TileVector({
+        format: new ol.format.GeoJSON({defaultProjection: 'EPSG:4326'}),
+        projection: 'EPSG:3857',
+        tileGrid: new ol.tilegrid.XYZ({minZoom: 14, maxZoom: 16}),
+        url: 'http://cyberjapandata.gsi.go.jp/xyz/experimental_rdcl/' +
+          '{z}/{x}/{y}.geojson'}),
+      style: function(feature, resolution) {
+        return [new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: '#aaa', width: 6
+          })
+        })];
+      }
+    })
+  ],
+  view: new ol.View({
+    center: ol.proj.transform([139.8977, 36.5594], 'EPSG:4326', 'EPSG:3857'),
+    zoom: 18, rotation: 10.7975
+  })
+});
+</script>
+</body>
+</html>
