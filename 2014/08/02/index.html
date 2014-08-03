@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+<meta charset='UTF-8'>
 <link rel="stylesheet" href="http://ol3js.org/en/master/css/ol.css">
 <style>
 body {padding: 0; margin: 0}
@@ -24,13 +25,15 @@ var map = new ol.Map({target: 'mapdiv',
       source: new ol.source.TileVector({
         format: new ol.format.GeoJSON({defaultProjection: 'EPSG:4326'}),
         projection: 'EPSG:3857',
-        tileGrid: new ol.tilegrid.XYZ({minZoom: 14, maxZoom: 16}),
+        tileGrid: new ol.tilegrid.XYZ({minZoom: 15, maxZoom: 16}),
         url: 'http://cyberjapandata.gsi.go.jp/xyz/experimental_rdcl/' +
           '{z}/{x}/{y}.geojson'}),
       style: function(feature, resolution) {
         return [new ol.style.Style({
           stroke: new ol.style.Stroke({
-            color: '#aaa', width: 6
+            color: '#888', 
+            width: (feature.get('rnkWidth') == '19.5m以上') ? 20 : 8,
+            lineDash: (feature.get('type') == '庭園路') ? [10] : undefined
           })
         })];
       }
