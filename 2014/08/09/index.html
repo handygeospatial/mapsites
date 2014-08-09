@@ -22,7 +22,7 @@
         'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
         {attribution: "地理院タイル（標準地図）",
          filter: function() {
-           new L.CSSFilter(this, {filters: ['saturate(200%)']}).render();
+           new L.CSSFilter(this, {filters: ['invert(100%)']}).render();
          }});
 
       var map = L.map('mapdiv', {
