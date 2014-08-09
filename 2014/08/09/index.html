@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title></title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css"/>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/leaflet-hash.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/TileLayer.GeoJSON.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/TileLayer.Filter.min.js"></script>
+    <style>
+      body {padding: 0; margin: 0}
+      html, body, #mapdiv {height: 100%; width: 100%;}
+      .leaflet-container {background: #fff;}
+    </style>
+  </head>
+  <body>
+    <div id="mapdiv">
+    <script>
+      var std = L.tileLayer(
+        'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+        {attribution: "地理院タイル（標準地図）",
+         filter: function() {
+           new L.CSSFilter(this, {filters: ['saturate(200%)']}).render();
+         }});
+
+      var map = L.map('mapdiv', {
+        center: [35.3622222, 138.7313889], zoom: 5,
+        layers: [std]});
+
+      var hash = L.hash(map);
+      L.control.layers({'地理院タイル（標準地図）': std}).addTo(map);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>GSI Tiles (experimental road centerlines and open orthophotos</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css"/>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/leaflet-hash.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/TileLayer.GeoJSON.js"></script>
+    <style>
+      body {padding: 0; margin: 0}
+      html, body, #mapdiv {height: 100%; width: 100%;}
+      .leaflet-container {background: #fff;}
+    </style>
+  </head>
+  <body>
+    <div id="mapdiv">
+    <script>
+      var ort = L.tileLayer(
+        'http://cyberjapandata.gsi.go.jp/xyz/ort/{z}/{x}/{y}.jpg',
+        {attribution: 'GSI Tiles (Orthophoto)', minZoom: 16, 
+         maxZoom: 22, maxNativeZoom: 17});
+      var std = L.tileLayer(
+        'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+        {attribution: 'GSI Tiles (Standard Japanese)', minZoom: 16, 
+         maxZoom: 22, maxNativeZoom: 18});
+      var english = L.tileLayer(
+        'http://cyberjapandata.gsi.go.jp/xyz/english/{z}/{x}/{y}.png',
+        {attribution: 'GSI Tiles (Romanized)', minZoom: 5, 
+         maxZoom: 15, maxNativeZoom: 11});
+      var rdcl = new L.TileLayer.GeoJSON(
+        'http://cyberjapandata.gsi.go.jp/xyz/experimental_rdcl/' + 
+        '{z}/{x}/{y}.geojson', {
+          attribution: 'GSI Tiles (Road Centerlines)', minZoom: 16, 
+          maxZoom: 22, maxNativeZoom: 16
+        }, {
+          style: function(feature) {
+            return {color: '#00f'};
+          },
+          onEachFeature: function(feature, layer) {
+            var prop = feature.properties;
+            var s = '<table border="1"><tr><td>record id</td><td>' + 
+              prop['rID'] + '</td></tr>';
+            s += '</table>';
+            layer.bindPopup(s);
+            layer.on('mouseover', function() {
+              layer.setStyle({color: '#f00'});
+            });
+          }
+        });
+
+      var map = L.map('mapdiv', {
+        center: [37.024, 139.647], zoom: 8, maxZoom: 22, 
+        layers: [ort, english, rdcl]});
+      
+      L.rectangle([[54 * 2.0 / 3, 139], [55 * 2.0 / 3, 141]], 
+        {color: '#f00', weight: 4, opacity: 1, fill: false}).addTo(map);
+      L.rectangle([[56 * 2.0 / 3, 138], [57 * 2.0 / 3, 140]], 
+        {color: '#f00', weight: 4, opacity: 1, fill: false}).addTo(map);
+
+      var hash = L.hash(map);
+      L.control.layers({
+        'GSI Tiles (Orthophoto)': ort,
+        'GSI Tiles (Standard Japanese)': std
+      }, {
+        'GSI Tiles (Romanized)': english,
+        'GSI Tiles (Road Centerlines)': rdcl,
+      }).addTo(map);
+      L.control.scale({imperial: false}).addTo(map);
+    </script>
+  </body>
+</html>
