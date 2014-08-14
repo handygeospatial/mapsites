@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+<meta charset='UTF-8'>
+<title>Leaflet + WebIX (thx shimz.me)</title>
+<link rel='stylesheet' href='../../../js/webix.css'>
+<link rel='stylesheet' href='http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css'>
+<script src='../../../js/webix.js'></script>
+<script src='http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js'></script>
+</head>
+<body>
+<script>
+webix.protoUI({
+	name: 'leaflet',
+	$init: function(){
+		this.$view.innerHTML = "<div style='width:100%;height:100%'/>";
+		this._contentobj = this.$view.firstChild;
+		this.map = null;
+		this.$ready.push(this.render);
+	},
+  render: function() {
+	  var c = this.config;
+    this.map = L.map(this._contentobj);
+		var delayDraw = function(map){
+			return function(){map.setView(c.center, c.zoom);}
+		}		
+		setTimeout(delayDraw(this.map), 500);
+		L.tileLayer(c.layer, {
+      attribution: c.attribution, center: c.center, zoom: c.zoom
+    }).addTo(this.map);
+  },
+	center_setter: function(config){
+		if(this.map) this.map.setCenter(config);
+		return config;
+	},
+	mapType_setter: function(config){
+		if(this.map) this.map.setType(config);
+		return config;
+	},
+	zoom_setter: function(config){
+		if(this.map) this.map.setZoom(config);
+		return config;
+	},
+}, webix.ui.view);
+
+webix.ui({
+  view: 'window', id: 'leaflet', move: true, 
+  top: 40, left: 40, width: 640, height: 480,
+  head:{
+    view: 'toolbar', elements: [
+      {view: 'label', label: '日本へそ公園', align: 'left'},
+      {view: 'button', label: '閉じる', width: 80, click:
+        function() {$$('leaflet').close();}}
+    ]
+  },
+  body:{
+    view: 'leaflet', id: 'map', zoom: 16, center: [35.0, 135.0],
+		layer: "http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
+		attribution: '地理院タイル（標準地図）'
+  }
+}).show();
+</script>
+</body>
+</html>
