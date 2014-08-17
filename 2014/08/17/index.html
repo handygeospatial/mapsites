@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title></title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css"/>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/leaflet-hash.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/TileLayer.GeoJSON.js"></script>
+    <script src="http://handygeospatial.github.io/mapsites/js/TileLayer.Filter.min.js"></script>
+    <style>
+      body {padding: 0; margin: 0}
+      html, body, #mapdiv {height: 100%; width: 100%;}
+      .leaflet-container {background: #000;}
+    </style>
+  </head>
+  <body>
+    <div id="mapdiv">
+    <script>
+      var std = L.tileLayer(
+        'http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+          attribution: "地理院タイル（標準地図）",
+          maxNativeZoom: 17, maxZoom: 22,
+          filter: function() {
+            new L.CanvasFilter(this, {
+              channelFilter: function(img) {
+var s = ''; ///
+    						for(var y = 0; y < 256; y++) {
+    							for(var x = 0; x < 256; x++) {
+                    var r = img.data[(x + y * 256) * 4 + 0];
+                    var g = img.data[(x + y * 256) * 4 + 1];
+                    var b = img.data[(x + y * 256) * 4 + 2];
+s += (r > b && g > b) + ", "; ///
+                    if(r > b && g > b) {
+//                      img.data[(x + y * 256) * 4 + 0] = 255;
+//                      img.data[(x + y * 256) * 4 + 1] = 255;
+                      img.data[(x + y * 256) * 4 + 2] = 255;
+                    }
+							    }
+						    }
+console.log(s);
+                return img;
+              }
+            }).render();
+          }
+        });
+
+      var map = L.map('mapdiv', {
+        center: [35.66477, 139.74905], zoom: 17,
+        layers: [std]});
+
+      var hash = L.hash(map);
+      L.control.layers({'地理院タイル（標準地図）': std}).addTo(map);
+    </script>
+  </body>
+</html>
