@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>8月16日からの大雨（広島市内）正射画像（2014年8月28日撮影）</title>
+<script src="../11/Build/Cesium/Cesium.js"></script>
+<style>
+@import url(../11/Build/Cesium/Widgets/widgets.css);
+#cesiumContainer {
+  position: absolute; top: 0; left: 0; height: 100%; width: 100%;
+  margin: 0; overflow: hidden; padding: 0; font-family: sans-serif;
+}
+html, body {padding: 0; margin: 0; overflow: hidden; height: 100%;}
+</style>
+</head>
+<body>
+<div id="cesiumContainer"></div>
+<script>
+var viewer = new Cesium.Viewer('cesiumContainer', {
+  sceneMode: Cesium.SceneMode.COLUMBUS_VIEW, 
+  mapProjection : new Cesium.WebMercatorProjection(), 
+  timeline: false, 
+  animation: false, 
+  imageryProvider: new Cesium.OpenStreetMapImageryProvider({
+    url: 'http://cyberjapandata.gsi.go.jp/xyz/std/', 
+    credit: '地理院タイル（標準地図）'}),
+    baseLayerPicker: false});
+viewer.scene.terrainProvider = new Cesium.CesiumTerrainProvider({
+  url: 'http://cesiumjs.org/stk-terrain/tilesets/world/tiles'});
+
+viewer.scene.camera.flyTo({
+  destination : Cesium.Cartesian3.fromDegrees(132.5, 34.5, 15000.0)
+});
+
+viewer.scene.imageryLayers.addImageryProvider(
+  new Cesium.OpenStreetMapImageryProvider({
+    url: 'http://cyberjapandata.gsi.go.jp/xyz/20140828dol/', 
+    fileExtension: 'png',
+    minimumLevel: 10,
+    maximumLelve: 18, 
+    rectangle: Cesium.Rectangle.fromDegrees(132.44, 34.45, 132.58, 34.58), 
+    credit: '地理院タイル（8月16日からの大雨（広島市内）正射画像（2014年8月28日撮影））'}
+  ));
+
+</script>
+</body>
+</html>
