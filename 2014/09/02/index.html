@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-<title>8月16日からの大雨（広島市内）正射画像（2014年8月28日撮影）</title>
-<script src="../11/Build/Cesium/Cesium.js"></script>
+<title>Cesium 1.0 習作 140902</title>
+<script src="../../08/11/Build/Cesium/Cesium.js"></script>
 <style>
-@import url(../11/Build/Cesium/Widgets/widgets.css);
+@import url(../../08/11/Build/Cesium/Widgets/widgets.css);
 #cesiumContainer {
   position: absolute; top: 0; left: 0; height: 100%; width: 100%;
   margin: 0; overflow: hidden; padding: 0; font-family: sans-serif;
@@ -29,7 +29,24 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
     baseLayerPicker: false});
 viewer.scene.terrainProvider = new Cesium.CesiumTerrainProvider({
   url: 'http://cesiumjs.org/stk-terrain/tilesets/world/tiles'});
-
+var instance = new Cesium.GeometryInstance({
+  geometry: new Cesium.SphereOutlineGeometry({
+    radius: 300000, stackPartitions: 8, slicePartitions: 12}),
+  modelMatrix: Cesium.Matrix4.multiplyByTranslation(
+    Cesium.Transforms.eastNorthUpToFixedFrame(
+      Cesium.Cartesian3.fromDegrees(135.0, 35.0)),
+    new Cesium.Cartesian3(0.0, 0.0, 300000), new Cesium.Matrix4()),
+  attributes: {
+    color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+      Cesium.Color.RED)}});
+viewer.scene.primitives.add(
+  new Cesium.Primitive({
+    geometryInstances: instance,
+    appearance: new Cesium.PerInstanceColorAppearance({
+      translucent: false, closed: true
+    })
+  })
+);
 viewer.scene.camera.flyTo({
   destination : Cesium.Cartesian3.fromDegrees(132.5, 34.5, 15000.0)
 });
