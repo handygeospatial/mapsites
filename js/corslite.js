@@ -1,5 +1,5 @@
-# copy of https://raw.githubusercontent.com/mapbox/corslite/master/corslite.js
-# LICENSE: https://github.com/mapbox/corslite/blob/master/LICENSE
+// copy of https://raw.githubusercontent.com/mapbox/corslite/master/corslite.js
+// LICENSE: https://github.com/mapbox/corslite/blob/master/LICENSE
 function corslite(url, callback, cors) {
     var sent = false;
 
