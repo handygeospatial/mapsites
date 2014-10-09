@@ -27,6 +27,11 @@ var std = L.tileLayer(
   attribution: "地理院タイル（標準地図）",
   subdomains: '123', maxNativeZoom: 18, maxZoom: 20, opacity: 1
 });
+var ort = L.tileLayer(
+'http://cyberjapandata-t{s}.gsi.go.jp/xyz/ort/{z}/{x}/{y}.jpg', {
+  attribution: "地理院タイル（オルソ画像）",
+  subdomains: '123', maxNativeZoom: 17, maxZoom: 20, opacity: 1
+});
 
 var rdcl = new L.TileLayer.GeoJSON(
 'http://cyberjapandata-t{s}.gsi.go.jp/xyz/experimental_rdcl/{z}/{x}/{y}.geojson', {
@@ -54,11 +59,12 @@ var rdcl = new L.TileLayer.GeoJSON(
 
 var map = L.map('mapdiv', {
   center: [36.32033, 139.07212], zoom: 17,
-  layers: [rdcl]});
+  layers: [rdcl, ort]});
 
 var hash = L.hash(map);
 L.control.layers({}, {
   '地理院タイル（標準地図）': std,
+  '地理院タイル（オルソ画像）': ort,
   '地理院ベクトルタイル提供実験（道路中心線）': rdcl
 }).addTo(map);
 </script>
